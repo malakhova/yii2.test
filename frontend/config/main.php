@@ -61,13 +61,14 @@ return [
 //    'as access' => [
 //        'class' => AccessControl::className(),
 //        'except' =>[
+//            'gii',
 //            'site/about',
 //            'site/contact',
 //            'site/signup',
 //            'site/login',
 //            'site/index',
 //            'site/request-password-reset',
-//            'site/reset-password'
+//            'site/reset-password',
 //        ],
 //        'rules' => [
 ////                    [

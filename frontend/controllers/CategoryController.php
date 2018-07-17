@@ -64,7 +64,7 @@ class CategoryController extends Controller
 
         else $parentName = null;
         return $this->render('view', [
-            'model' => $model,
+                                            'model' => $model,
             'types' => $types,
             'parentName' => $parentName
         ]);
