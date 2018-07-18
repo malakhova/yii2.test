@@ -4,66 +4,38 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Comment */
+/* @var $model common\essences\Comment */
 
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="comment-view">
 
-<head>
-    <style type="text/css">
-        .short-view {
-            margin:10px 0;
-            padding:10px;
-            border: 1px solid rgb(213, 217, 212);
-        }
-        span {
-            font-weight: bold;
-            /*color: red;*/
-        }
+    <h1><?= Html::encode($this->title) ?></h1>
 
-        .meta-comment {
-            font-size: small;
-        }
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
 
-        .username {
-            font-weight: bold;
-        }
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
+            'user_id',
+            'post_id',
+            'parent_id',
+            'level',
+            'comment',
+            'created_at',
+        ],
+    ]) ?>
 
-        .date {
-            color: #7c7e7b;
-        }
-        .comment {
-            background-color: rgba(0, 0 , 1, 0.05);
-            padding:10px;
-        }
-
-        .btn-more {
-            margin: 5px 0;
-            float: right;
-        }
-
-        .btn{
-            padding: 5px 25px;
-            /*text-transform: lowercase;*/
-        }
-    </style>
-    <link rel="stylesheet" href="../../css/post.css" type="text/css"/>
-    <!--    <link  rel="stylesheet" type="text/css" href="../../css/post.css"/>-->
-</head>
-<body>
-<div class="short-view">
-
-    <div class="meta-comment">
-        <div class="username"><?= $model->user->username ?></div>
-        <div class="date"><?= $model->created_at ?></div>
-    </div>
-
-    <div class="comment">
-        <?= $model->comment ?>
-    </div>
-
-    <a style="float: right;">Ответить</a>
-
-    <div style="clear: both;"></div>
 </div>
-
-</body>

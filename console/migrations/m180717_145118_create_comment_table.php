@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `comment`.
  */
-class m180716_133446_create_comment_table extends Migration
+class m180717_145118_create_comment_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -18,11 +18,9 @@ class m180716_133446_create_comment_table extends Migration
             'post_id' => $this->integer()->notNull(),
             'parent_id' => $this->integer(),
             'level' => $this->integer()->notNull()->defaultValue(0),
-            'left' => $this->integer()->notNull()->defaultValue(0),
-            'right' => $this->integer()->notNull()->defaultValue(0),
             'comment' => $this->string(256)->notNull(),
             'created_at' => $this->dateTime()->notNull()
-        ]);
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `user_id`
         $this->createIndex(

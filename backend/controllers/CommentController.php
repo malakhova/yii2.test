@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\essences\Post;
+use common\essences\User;
 use Yii;
-use backend\models\Comment;
-use backend\models\CommentSearch;
+use common\essences\Comment;
+use backend\forms\Comment as CommentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -66,12 +68,25 @@ class CommentController extends Controller
     {
         $model = new Comment();
 
+        $users = User::find()->all();
+        $posts = Post::find()->all();
+        $comments = Comment::find()->all();
+
+        $model->created_at = date('Y.m.d H:i');
+
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $parentLevel = $model->parent->level;
+            $model->level = $parentLevel + 1;
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'users' => $users,
+            'posts' => $posts,
+            'comments' => $comments,
         ]);
     }
 
@@ -123,5 +138,25 @@ class CommentController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /* @var $comment Comment*/
+    public function actionParentsList()
+    {
+
+        if(Yii::$app->request->isAjax)
+        {
+            $post = (int)Yii::$app->request->post('post');
+            $comments = Comment::find()
+                ->where('post_id=:post', [':post' => $post])
+                ->all();
+
+            $option ="";
+            foreach($comments as $comment){
+                $option .= '<option value="'.$comment->id.'">'.$comment->user->username.': '.$comment->comment.'</option>';
+            }
+        }
+
+        return $option;
     }
 }

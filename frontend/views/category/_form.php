@@ -35,8 +35,8 @@ use yii\helpers\Url;
         [
             'prompt' => 'Выбрать категорию...',
             'id' => 'category',
-            'disabled' => 'namePa' ? 'disabled' : false
-            //'disabled' => $model->isNewRecord ? 'disabled' : false
+//            'disabled' => 'namePa' ? 'disabled' : false
+            'disabled' => $model->isNewRecord ? 'disabled' : false
 
         ]) ?>
 

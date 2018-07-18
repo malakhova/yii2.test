@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\essences;
 
 use common\essences\User;
 use Yii;
@@ -13,8 +13,6 @@ use Yii;
  * @property int $post_id
  * @property int $parent_id
  * @property int $level
- * @property int $left
- * @property int $right
  * @property string $comment
  * @property string $created_at
  *
@@ -40,7 +38,7 @@ class Comment extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'post_id', 'comment', 'created_at'], 'required'],
-            [['user_id', 'post_id', 'parent_id', 'level', 'left', 'right'], 'integer'],
+            [['user_id', 'post_id', 'parent_id', 'level'], 'integer'],
             [['created_at'], 'safe'],
             [['comment'], 'string', 'max' => 256],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comment::className(), 'targetAttribute' => ['parent_id' => 'id']],
@@ -60,8 +58,6 @@ class Comment extends \yii\db\ActiveRecord
             'post_id' => 'Post ID',
             'parent_id' => 'Parent ID',
             'level' => 'Level',
-            'left' => 'Left',
-            'right' => 'Right',
             'comment' => 'Comment',
             'created_at' => 'Created At',
         ];
@@ -99,23 +95,11 @@ class Comment extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    public function getOneLevelComments(){
-
-    }
-
-    public static function getMaxRightKey()
+    public static function getMaxLevel()
     {
-        $max_rightKey = Comment::find()
-            ->max('right');
-        return $max_rightKey;
-
-    }
-
-    public static function getParentRightKey($parent_id)
-    {
-        $max_rightKey = Comment::find()
-            ->max('right');
-        return $max_rightKey;
+        $maxLevel = Comment::find()
+            ->max('level');
+        return $maxLevel;
 
     }
 }

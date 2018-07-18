@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\CommentSearch */
+/* @var $model backend\forms\Comment */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -24,10 +24,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'parent_id') ?>
 
     <?= $form->field($model, 'level') ?>
-
-    <?php // echo $form->field($model, 'left') ?>
-
-    <?php // echo $form->field($model, 'right') ?>
 
     <?php // echo $form->field($model, 'comment') ?>
 

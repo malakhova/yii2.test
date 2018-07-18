@@ -70,6 +70,7 @@ class PostController extends Controller
         $model->user_id = $currentUserID;
 //        $model->description = " ";
 
+        $model->created_at = date('Y.m.d H:i');
 
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

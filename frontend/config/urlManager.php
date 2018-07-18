@@ -11,13 +11,15 @@ return [
     'enablePrettyUrl' => true,
     'showScriptName' => false,
     'rules' => [
+
+        'blogs' => 'blog/index',
         'login' => 'site/login',
         '' => 'site/index',
         '<_a:(about|contact)>' => 'site/<_a>',
         'categories' => 'category',
         '<controller:[\w-]+>s' => '<controller>',
         '<controller:[\w-]+>/<_a:(view|update)>/<id:\d+>' => '<controller>/<_a>',
-
+        'blog/<slug>' => 'blog/slug',
 //
 //        'PUT <controller:[\w-]+>/update/<id:\d+>'    => '<controller>/update',
 //        'DELETE <controller:[\w-]+>/<id:\d+>' => '<controller>/delete',

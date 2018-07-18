@@ -58,30 +58,30 @@ return [
 //            ],
 //        ],
     ],
-//    'as access' => [
-//        'class' => AccessControl::className(),
-//        'except' =>[
-//            'gii',
-//            'site/about',
-//            'site/contact',
-//            'site/signup',
-//            'site/login',
-//            'site/index',
-//            'site/request-password-reset',
-//            'site/reset-password',
-//        ],
-//        'rules' => [
-////                    [
-////                        'actions' => ['signup'],
-////                        'allow' => true,
-////                        'roles' => ['?'],
-////                    ],
+    'as access' => [
+        'class' => AccessControl::className(),
+        'except' =>[
+            'gii',
+            'site/about',
+            'site/contact',
+            'site/signup',
+            'site/login',
+            'site/index',
+            'site/request-password-reset',
+            'site/reset-password',
+        ],
+        'rules' => [
 //                    [
-//                        //'actions' => ['logout'],
+//                        'actions' => ['signup'],
 //                        'allow' => true,
-//                        'roles' => ['@'],
+//                        'roles' => ['?'],
 //                    ],
-//                ],
-//    ],
+                    [
+                        //'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+    ],
     'params' => $params,
 ];

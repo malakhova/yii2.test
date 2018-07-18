@@ -45,6 +45,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         array_unshift($menuItems,
+            ['label' => 'Blog', 'url' => ['/blog']],
             ['label' => 'Categories', 'url' => ['/category']],
             ['label' => 'Bills', 'url' => ['/bill']],
             ['label' => 'Transactions', 'url' => ['/transaction']]);

@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\forms;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Comment;
+use common\essences\Comment as CommentModel;
 
 /**
- * CommentSearch represents the model behind the search form of `backend\models\Comment`.
+ * Comment represents the model behind the search form of `common\essences\Comment`.
  */
-class CommentSearch extends Comment
+class Comment extends CommentModel
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class CommentSearch extends Comment
     public function rules()
     {
         return [
-            [['id', 'user_id', 'post_id', 'parent_id', 'level', 'left', 'right'], 'integer'],
+            [['id', 'user_id', 'post_id', 'parent_id', 'level'], 'integer'],
             [['comment', 'created_at'], 'safe'],
         ];
     }
@@ -41,8 +41,7 @@ class CommentSearch extends Comment
      */
     public function search($params)
     {
-        $query = Comment::find();
-//        $query->andFilterWhere(['post_id' => ]);
+        $query = CommentModel::find();
 
         // add conditions that should always apply here
 
@@ -65,8 +64,6 @@ class CommentSearch extends Comment
             'post_id' => $this->post_id,
             'parent_id' => $this->parent_id,
             'level' => $this->level,
-            'left' => $this->left,
-            'right' => $this->right,
             'created_at' => $this->created_at,
         ]);
 
