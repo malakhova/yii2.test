@@ -6,7 +6,7 @@ use \yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $model common\essences\Comment */
+/* @var $comment common\essences\Comment */
 /* @var $form yii\widgets\ActiveForm */
 
 /* @var $comments common\essences\Comment */
@@ -16,14 +16,14 @@ use yii\helpers\Url;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map($users, 'id', 'username')) ?>
+    <?= $form->field($comment, 'user_id')->dropDownList(ArrayHelper::map($users, 'id', 'username')) ?>
 
-    <?= $form->field($model, 'post_id')->dropDownList(ArrayHelper::map($posts, 'id', 'title'),
+    <?= $form->field($comment, 'post_id')->dropDownList(ArrayHelper::map($posts, 'id', 'title'),
         [
             'prompt' => 'Выбрать пост...',
             'onchange' => '
                   $.post(
-                  "'.Url::toRoute('comment/parents-list').'",
+                  "'.Url::toRoute('comment/create-list-of-comment-parents').'",
                   {post : $(this).val()},
                   function(data){
                       $("select#comments").html(data).attr("disabled", false)
@@ -32,15 +32,15 @@ use yii\helpers\Url;
             '
         ]) ?>
 
-    <?= $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map($comments, 'id', 'user_id'),
+    <?= $form->field($comment, 'parent_id')->dropDownList(ArrayHelper::map($comments, 'id', 'user_id'),
         [
-            'prompt' => 'Выбрать категорию...',
+            'prompt' => 'Выбрать комментарий...',
             'id' => 'comments',
-            'disabled' => $model->isNewRecord ? 'disabled' : false
+            'disabled' => $comment->isNewRecord ? 'disabled' : false
 
         ]) ?>
 
-    <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($comment, 'comment')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

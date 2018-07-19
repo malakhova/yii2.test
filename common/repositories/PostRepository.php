@@ -15,5 +15,6 @@ interface PostRepository
 {
     public function getPostById($id) : Post;
     public function getPostBySlug($id) : Post;
-//    public function getIdBySlug($slug);
+    public function getListOfPosts();
+    public function getAllPosts();
 }

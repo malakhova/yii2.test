@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\essences\Comment */
 
-$this->title = $model->id;
+$this->title = $comment->id;
 $this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,8 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Update', ['update', 'id' => $comment->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $comment->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -26,12 +26,26 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $comment,
         'attributes' => [
             'id',
-            'user_id',
-            'post_id',
-            'parent_id',
+            [
+                'attribute' => 'user_id',
+                'value' => $authorUsername,
+            ],
+            [
+                'attribute' => 'post_id',
+                'value' => $postTitle,
+            ],
+            [
+                'label' => 'В ответ пользователю',
+                'attribute' => 'parent_id',
+                'value' => $usernameOfParentComment,
+            ],
+            [
+                'attribute' => 'parent_id',
+                'value' => $commentOfParentComment,
+            ],
             'level',
             'comment',
             'created_at',

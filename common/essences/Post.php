@@ -83,12 +83,12 @@ class Post extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'title' => 'Title',
+            'user_id' => 'Пользователь',
+            'title' => 'Заголовок',
             'slug' => 'Slug',
-            'content' => 'Content',
-            'description' => 'Description',
-            'created_at' => 'Created At',
+            'content' => 'Контент',
+            'description' => 'Описание',
+            'created_at' => 'Создано',
         ];
     }
 
@@ -100,20 +100,4 @@ class Post extends ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    /**
-     * Возвращает модель поста.
-     * @param int $id
-     * @throws NotFoundHttpException в случае, когда пост не найден
-     * @return Post
-     */
-    public function getPost($id)
-    {
-        ;
-        if (($model = Post::findOne($id))!== null)
-        {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested post does not exist.');
-        }
-    }
 }

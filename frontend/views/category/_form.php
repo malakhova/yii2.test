@@ -27,10 +27,7 @@ use yii\helpers\Url;
                   )
             '
         ]) ?>
-    <?= Html::checkbox('newParent', false, [
-            'label' => 'Создать родительскую категорию',
 
-    ]) ?>
     <?= $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map($parents, 'id', 'name'),
         [
             'prompt' => 'Выбрать категорию...',

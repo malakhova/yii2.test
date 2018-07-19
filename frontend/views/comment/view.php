@@ -89,8 +89,8 @@ if($model->user_id == $currentUserID) {
         <?= $model->comment ?>
     </div>
 
-    <?= Html::a("Ответить" , ['comment/_form'], ['class' => 'reply']
-//        'id' => $model->id]
+    <?= Html::a("Ответить" , ['comment/_form'], ['class' => 'reply'],
+        ['id' => $model->id]
     ) ?>
 
     <div style="clear: both;"></div>

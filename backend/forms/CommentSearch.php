@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\models;
+namespace backend\forms;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Comment;
+use common\essences\Comment as CommentModel;
 
 /**
- * CommentSearch represents the model behind the search form of `backend\models\Comment`.
+ * Comment represents the model behind the search form of `common\essences\Comment`.
  */
-class CommentSearch extends Comment
+class CommentSearch extends CommentModel
 {
     /**
      * {@inheritdoc}
@@ -41,8 +41,7 @@ class CommentSearch extends Comment
      */
     public function search($params)
     {
-        $query = Comment::find();
-//        $query->andFilterWhere(['post_id' => ]);
+        $query = CommentModel::find();
 
         // add conditions that should always apply here
 

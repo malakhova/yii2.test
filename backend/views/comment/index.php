@@ -24,13 +24,32 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute' => 'post_id',
+                'value' => 'post.title',
+                'filter' => $postsFilter
+            ],
+            [
+                'attribute' => 'user_id',
+                'value' => 'user.username',
+                'filter' => $usersFilter
+            ],
 
-            'id',
-            'user_id',
-            'post_id',
-            'parent_id',
-            'level',
-            //'comment',
+            [
+                'label' => 'В ответ пользователю',
+                'attribute' => 'parent_id',
+                'value' => 'parent.user.username',
+            ],
+            [
+                'attribute' => 'parent_id',
+                'value' => 'parent.comment',
+                'contentOptions' => ['style' => 'width: 20%; white-space: normal;'],
+            ],
+//            'level',
+            [
+                'attribute' => 'comment',
+                'contentOptions' => ['style' => 'width: 30%; white-space: normal;'],
+            ],
             //'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],

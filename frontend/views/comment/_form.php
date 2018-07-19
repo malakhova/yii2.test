@@ -28,7 +28,7 @@ $this->registerJs(
     <?php
     if($comment->parent_id != null) {
         $usernameParentComment = $comment->parent->user->username;
-        echo "<div class=\"reply-to\">"."в ответ "."<span class='reply-to-usermane'>"."$usernameParentComment"."</span> </div>";
+        echo "<div class=\"reply-to\">"."в ответ "."<span class='reply-to-username'>"."$usernameParentComment"."</span> </div>";
     }
     ?>
     <?= $form->field($comment, 'comment')->textarea(['rows' => 2]) ?>

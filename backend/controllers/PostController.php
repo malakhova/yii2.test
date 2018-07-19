@@ -2,9 +2,12 @@
 
 namespace backend\controllers;
 
+use common\services\PostService;
+use common\services\UserService;
 use Yii;
-use backend\models\Post;
-use backend\models\PostSearch;
+use common\essences\Post;
+use backend\forms\PostSearch;
+use yii\base\Module;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,6 +17,19 @@ use yii\filters\VerbFilter;
  */
 class PostController extends Controller
 {
+    private $postService;
+    private $userService;
+    private $users;
+
+    public function __construct(string $id, Module $module, PostService $postService, UserService $userService, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->postService = $postService;
+        $this->userService = $userService;
+
+        $this->users = $this->userService->findAllUsers();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,8 +68,11 @@ class PostController extends Controller
      */
     public function actionView($id)
     {
+        $post = $this->postService->findPostById($id);
+        $username = $this->postService->getUsernameOfAuthor($post);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'post' => $post,
+            'username' => $username,
         ]);
     }
 
@@ -64,21 +83,15 @@ class PostController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Post();
+        $post = $this->postService->createBackendPost();
 
-        $currentUserID = Yii::$app->user->id;
-        $model->user_id = $currentUserID;
-//        $model->description = " ";
-
-        $model->created_at = date('Y.m.d H:i');
-
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($post->load(Yii::$app->request->post()) && $post->save()) {
+            return $this->redirect(['view', 'id' => $post->id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'post' => $post,
+            'users' => $this->users
         ]);
     }
 
@@ -91,14 +104,15 @@ class PostController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $post = $this->postService->findPostById($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($post->load(Yii::$app->request->post()) && $post->save()) {
+            return $this->redirect(['view', 'id' => $post->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $post,
+            'users' => $this->users
         ]);
     }
 
@@ -111,39 +125,9 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $post = $this->postService->findPostById($id);
+        $post->delete();
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Post model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Post the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Post::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-//    public function actionGenerateDescription(){
-//        $description ="2";
-//        if(Yii::$app->request->isAjax)
-//        {
-////            $content = (string)Yii::$app->request->post('content');
-////            $description = substr ( $content, 0, 147);
-////          /  $description = substr($description, 0, strrpos($description, ' '));
-//            $description ="!!!!";
-//
-//        }
-//
-//
-//        return $description;
-//    }
 }

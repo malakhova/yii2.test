@@ -4,9 +4,14 @@ namespace backend\controllers;
 
 use common\essences\Post;
 use common\essences\User;
+use common\services\CommentService;
+use common\services\PostService;
+use common\services\UserService;
+use Exception;
 use Yii;
 use common\essences\Comment;
-use backend\forms\Comment as CommentSearch;
+use backend\forms\CommentSearch;
+use yii\base\Module;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,6 +21,26 @@ use yii\filters\VerbFilter;
  */
 class CommentController extends Controller
 {
+    private $commentService;
+    private $postService;
+    private $userServices;
+
+    private $users;
+    private $posts;
+    private $comments;
+
+    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->commentService = $commentService;
+        $this->postService = $postService;
+        $this->userServices = $userService;
+
+        $this->users = $this->userServices->findAllUsers();
+        $this->posts =  $this->postService->findAllPosts();
+        $this->comments =  $this->commentService->findAllComments();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,9 +65,14 @@ class CommentController extends Controller
         $searchModel = new CommentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $postsFilter = $this->postService->filterList();
+        $usersFilter = $this->userServices->filterList();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'postsFilter' => $postsFilter,
+            'usersFilter' => $usersFilter,
         ]);
     }
 
@@ -54,8 +84,28 @@ class CommentController extends Controller
      */
     public function actionView($id)
     {
+        $comment = $this->commentService->findCommentById($id);
+
+        $authorUsername = $this->commentService->getUsernameOfAuthor($comment);
+        $postTitle = $this->commentService->getTitleOfPost($comment);
+
+        try {
+            $usernameOfParentComment = $this->commentService->getUsernameOfParentComment($comment);
+            $commentOfParentComment = $this->commentService->getCommentOfParentComment($comment);
+        }
+        catch (Exception $exception)
+        {
+            $usernameOfParentComment = null;
+            $commentOfParentComment = null;
+        }
+
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'comment' => $comment,
+            'authorUsername' => $authorUsername,
+            'postTitle' => $postTitle,
+            'usernameOfParentComment' => $usernameOfParentComment,
+            'commentOfParentComment' => $commentOfParentComment,
         ]);
     }
 
@@ -66,27 +116,19 @@ class CommentController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Comment();
-
-        $users = User::find()->all();
-        $posts = Post::find()->all();
-        $comments = Comment::find()->all();
-
-        $model->created_at = date('Y.m.d H:i');
+        $comment = $this->commentService->createBackendComment();
 
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $parentLevel = $model->parent->level;
-            $model->level = $parentLevel + 1;
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+            $this->commentService->setCommentLevel($comment);
+            return $this->redirect(['view', 'id' => $comment->id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
-            'users' => $users,
-            'posts' => $posts,
-            'comments' => $comments,
+            'comment' => $comment,
+            'users' => $this->users,
+            'posts' => $this->posts,
+            'comments' => $this->comments,
         ]);
     }
 
@@ -99,14 +141,18 @@ class CommentController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $comment = $this->commentService->findCommentById($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+            return $this->redirect(['view', 'id' => $comment->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'comment' => $comment,
+            'users' => $this->users,
+            'posts' => $this->posts,
+            'comments' => $this->comments,
         ]);
     }
 
@@ -119,42 +165,21 @@ class CommentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $comment = $this->commentService->findCommentById($id);
+        $comment->delete();
 
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Comment model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Comment the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Comment::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
 
     /* @var $comment Comment*/
-    public function actionParentsList()
+    public function actionCreateListOfCommentParents()
     {
 
         if(Yii::$app->request->isAjax)
         {
             $post = (int)Yii::$app->request->post('post');
-            $comments = Comment::find()
-                ->where('post_id=:post', [':post' => $post])
-                ->all();
-
-            $option ="";
-            foreach($comments as $comment){
-                $option .= '<option value="'.$comment->id.'">'.$comment->user->username.': '.$comment->comment.'</option>';
-            }
+            $option = $this->commentService->createListOfCommentParents($post);
         }
 
         return $option;

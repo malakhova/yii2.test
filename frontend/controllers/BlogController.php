@@ -9,8 +9,8 @@
 namespace frontend\controllers;
 
 use common\essences\Comment;
-use common\services\CommentServices;
-use common\services\PostServices;
+use common\services\CommentService;
+use common\services\PostService;
 use common\services\UserService;
 use frontend\forms\CommentSearch;
 use Yii;
@@ -27,12 +27,12 @@ class BlogController extends Controller
     private $commentService;
     private $postService;
 
-    public function __construct(string $id, Module $module, array $config = [])
+    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, array $config = [])
     {
         parent::__construct($id, $module, $config);
-        $this->commentService = new CommentServices();
-        $this->postService = new PostServices();
-        $this->userService = new UserService();
+        $this->commentService = $commentService;
+        $this->postService = $postService;
+        $this->userService = $userService;
     }
 
     public function behaviors()
@@ -67,11 +67,11 @@ class BlogController extends Controller
         $dataProvider = $this->commentService->treeCommentsView($post_id);
 
 
-        $comment = $this->commentService->createComment($post_id);
+        $comment = $this->commentService->createFrontendComment($post_id);
 
         if ($comment->load(Yii::$app->request->post()) && $comment->save())
         {
-            $comment = $this->commentService->createComment($post_id);
+            $comment = $this->commentService->createFrontendComment($post_id);
         }
 
         return $this->render('view', [

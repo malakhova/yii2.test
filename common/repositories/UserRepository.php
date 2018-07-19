@@ -7,12 +7,20 @@
  */
 namespace common\repositories;
 
+use common\essences\User;
+
 interface UserRepository
 {
     public function createUser($username, $email, $password);
 
-    public function getUserByUsername($username);
+    public function getUserById($id) : User;
+
+    public function getUserByUsername($username)  : User;
 
     public function getPasswordHashByUsername($username);
+
+    public function getListOfUsers();
+
+    public function getAllUsers();
 
 }
