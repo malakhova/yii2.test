@@ -73,7 +73,7 @@ class BillController extends Controller
     {
         $model = new Bill();
 
-        /** @var frontend\essences\User $userModel */
+        /** @var common\essences\User $userModel */
         $currentUserID = Yii::$app->user->id;
         $model->user_id = $currentUserID;
 

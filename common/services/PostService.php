@@ -11,6 +11,7 @@ use common\essences\Post;
 use common\essences\User;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
+use yii\helpers\ArrayHelper;
 
 class PostService
 {
@@ -53,6 +54,21 @@ class PostService
     public function filterList()
     {
         return $this->postRepository->getListOfPosts();
+    }
+
+    public function filterAuthorList()
+    {
+        $authorList = array();
+        $allPosts = $this->postRepository->getAllPosts();
+        foreach ($allPosts as $post)
+        {
+            if(!in_array($post, $authorList))
+            {
+                $authorList[] = $this->findAuthorOfPost($post);
+            }
+        }
+        $list = ArrayHelper::map($authorList, 'id', 'username');
+        return $list;
     }
 
     public function findAllPosts()

@@ -28,9 +28,21 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'user_id',
                 'value' => 'user.username',
+                'contentOptions' => ['style' => 'width: 10%; white-space: normal;'],
+                'filter' => $authorFilter
             ],
-            'title',
-            'slug',
+            [
+                'attribute' => 'title',
+                'contentOptions' => ['style' => 'width: 10%; white-space: normal;'],
+            ],
+            [
+                'attribute' => 'slug',
+                'contentOptions' => ['style' => 'width: 10%; white-space: normal;'],
+            ],
+            [
+                'attribute' => 'description',
+                'contentOptions' => ['style' => 'width: 20%; white-space: normal;'],
+            ],
             [
                 'attribute' => 'content',
                 'contentOptions' => ['style' => 'width: 50%; white-space: normal;'],
@@ -38,10 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 //            'content:ntext',
 //            'description',
-            [
-                'attribute' => 'description',
-                'contentOptions' => ['style' => 'width: 20%; white-space: normal;'],
-            ],
+
             //'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],

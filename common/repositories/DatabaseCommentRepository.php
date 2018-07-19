@@ -22,14 +22,14 @@ class DatabaseCommentRepository implements CommentRepository
         if (($comment = Comment::findOne($id)) !== null) {
             return $comment;
         }
-        throw new Error("Post not found in Database");
+        throw new \Exception("Comment not found in Database");
     }
 
 
     public function getAllComments()
     {
         // TODO: Implement getAllComments() method.
-        return Post::find()->all();
+        return Comment::find()->all();
     }
 
 }

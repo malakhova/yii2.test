@@ -32,9 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'user_id',
                 'value' => 'user.username',
-                'filter' => $usersFilter
+                'filter' => $userFilter
             ],
-
             [
                 'label' => 'В ответ пользователю',
                 'attribute' => 'parent_id',

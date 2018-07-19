@@ -23,7 +23,7 @@ class CommentController extends Controller
 {
     private $commentService;
     private $postService;
-    private $userServices;
+    private $userService;
 
     private $users;
     private $posts;
@@ -34,9 +34,9 @@ class CommentController extends Controller
         parent::__construct($id, $module, $config);
         $this->commentService = $commentService;
         $this->postService = $postService;
-        $this->userServices = $userService;
+        $this->userService = $userService;
 
-        $this->users = $this->userServices->findAllUsers();
+        $this->users = $this->userService->findAllUsers();
         $this->posts =  $this->postService->findAllPosts();
         $this->comments =  $this->commentService->findAllComments();
     }
@@ -66,13 +66,13 @@ class CommentController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $postsFilter = $this->postService->filterList();
-        $usersFilter = $this->userServices->filterList();
+        $userFilter = $this->commentService->filterAuthorList();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'postsFilter' => $postsFilter,
-            'usersFilter' => $usersFilter,
+            'userFilter' => $userFilter
         ]);
     }
 
@@ -165,9 +165,32 @@ class CommentController extends Controller
      */
     public function actionDelete($id)
     {
-        $comment = $this->commentService->findCommentById($id);
-        $comment->delete();
+        try
+        {
+            $comment = $this->commentService->findCommentById($id);
+        }
+        catch (Exception $exception)
+        {
+            return $this->redirect(['index']);
+        }
 
+        try
+        {
+            $parentCommentLevel= $comment->level;
+            $allChildComments = $this->commentService->allChildComments($comment);
+            foreach ($allChildComments as $childComment)
+            {
+                $childComment->level = $parentCommentLevel;
+                $childComment->save();
+            }
+        }
+        catch (Exception $exception)
+        {
+            $comment->delete();
+            return $this->redirect(['index']);
+        }
+
+        $comment->delete();
         return $this->redirect(['index']);
     }
 

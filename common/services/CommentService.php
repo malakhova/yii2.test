@@ -14,6 +14,7 @@ use common\essences\User;
 use common\repositories\DatabaseCommentRepository;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
+use yii\helpers\ArrayHelper;
 
 class CommentService
 {
@@ -92,10 +93,19 @@ class CommentService
         return $treeComments;
     }
 
+
+
+    public function findAllComments()
+    {
+        return $this->commentRepository->getAllComments();
+    }
+
     public function findCommentById($id)
     {
         return $this->commentRepository->getCommentById($id);
     }
+
+
 
     public function findAuthorOfComment($comment) : User
     {
@@ -135,10 +145,7 @@ class CommentService
 
     }
 
-    public function findAllComments()
-    {
-        return $this->commentRepository->getAllComments();
-    }
+
 
     public function setCommentLevel(Comment $comment)
     {
@@ -151,6 +158,30 @@ class CommentService
         }
 
         $comment->save();
+    }
+
+    public function allChildComments(Comment $comment)
+    {
+        $parentCommentId = $comment->id;
+        $allChildComments = Comment::find()->where(['parent_id' => $parentCommentId])->all();
+        if($allChildComments){
+            return $allChildComments;
+        } else {
+            throw new \Exception("Comment doesn't have child comments");
+        }
+
+    }
+
+    public function updateLevelOfChildComments(Comment &$comment)
+    {
+        $parentCommentId = $comment->id;
+        $parentCommentLevel= $comment->level;
+        $allChildComments = $this->allChildComments($comment);
+        foreach ($allChildComments as $childComment)
+        {
+            $childComment->level = $parentCommentLevel;
+            $childComment->save();
+        }
     }
 
     public function createListOfCommentParents(int $post)
@@ -167,4 +198,18 @@ class CommentService
         return $option;
     }
 
+    public function filterAuthorList()
+    {
+        $userList = array();
+        $allComments = $this->commentRepository->getAllComments();
+        foreach ($allComments as $comment)
+        {
+            if(!in_array($comment, $userList))
+            {
+                $userList[] = $this->findAuthorOfComment($comment);
+            }
+        }
+        $list = ArrayHelper::map($userList, 'id', 'username');
+        return $list;
+    }
 }

@@ -54,9 +54,13 @@ class PostController extends Controller
         $searchModel = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
+        $authorFilter = $this->postService->filterAuthorList();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'authorFilter' => $authorFilter
         ]);
     }
 
