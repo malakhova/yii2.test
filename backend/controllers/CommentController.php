@@ -178,16 +178,17 @@ class CommentController extends Controller
         {
             $parentCommentLevel= $comment->level;
             $allChildComments = $this->commentService->allChildComments($comment);
-            foreach ($allChildComments as $childComment)
-            {
-                $childComment->level = $parentCommentLevel;
-                $childComment->save();
-            }
+
         }
         catch (Exception $exception)
         {
             $comment->delete();
             return $this->redirect(['index']);
+        }
+        foreach ($allChildComments as $childComment)
+        {
+            $childComment->level = $parentCommentLevel;
+            $childComment->save();
         }
 
         $comment->delete();
