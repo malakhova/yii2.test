@@ -6,6 +6,8 @@
  * Time: 15:41
  */
 use yii\helpers\Html;
+
+/* @var $post common\essences\Post */
 ?>
 <head>
     <style type="text/css">
@@ -37,25 +39,23 @@ use yii\helpers\Html;
             /*text-transform: lowercase;*/
         }
     </style>
-    <link rel="stylesheet" href="../../../backend/css/post.css" type="text/css"/>
-<!--    <link  rel="stylesheet" type="text/css" href="../../css/post.css"/>-->
+<!--    <link rel="stylesheet" href="../../../backend/css/post.css" type="text/css"/>-->
 </head>
 <body>
 <div class="short-view">
-    <h1><?= $model->title ?></h1>
+    <h1><?= $post->title ?></h1>
 
     <div class="meta">
-        <p><span class="author">Автор</span>: <?= $model->user->username ?> <br>
-            <span>Дата публикации:</span> <?= $model->created_at ?> </p>
+        <p><span class="author">Автор</span>: <?= $post->user->username ?> <br>
+            <span>Дата публикации:</span> <?= $post->created_at ?> </p>
     </div>
 
     <div style="padding:10px;" class="description">
-        <?= $model->description ?>
+        <?= $post->description ?>
     </div>
 
     <div class="btn-more">
-    <?= Html::a("More" , ['blog/'.$model->slug,
-//        'slug' => $model->slug
+    <?= Html::a("More" , ['blog/'.$post->slug,
     ],
         ['class' => 'btn btn-default']
     ) ?>

@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\essences\Comment */
+/* @var $comment common\essences\Comment */
 
 $currentUserID = Yii::$app->user->id;
 $colorUsername = "";
-if($model->user_id == $currentUserID) {
+if($comment->user_id == $currentUserID) {
     $colorUsername = "#2A52BE";
 }
 
@@ -70,27 +70,27 @@ if($model->user_id == $currentUserID) {
     <link rel="stylesheet" href="../../../backend/css/post.css" type="text/css"/>
 </head>
 <body>
-<div class="short-view" style="margin-left: <?=$marginLevel = 15*$model->level?>px">
+<div class="short-view" style="margin-left: <?=$marginLevel = 15*$comment->level?>px">
 
     <div class="meta-comment">
 
-        <div class="username" style=" color: <?= $colorUsername?>;"><?= $model->user->username ?></div>
+        <div class="username" style=" color: <?= $colorUsername?>;"><?= $comment->user->username ?></div>
 
-        <div class="date"><?= $model->created_at ?></div>
+        <div class="date"><?= $comment->created_at ?></div>
         <?php
-        if($model->parent_id != null) {
-            $usernameParentComment = $model->parent->user->username;
+        if($comment->parent_id != null) {
+            $usernameParentComment = $comment->parent->user->username;
             echo "<div class=\"reply-to\">"."в ответ "."<span class='reply-to-username'>"."$usernameParentComment"."</span> </div>";
         }
         ?>
     </div>
 
     <div class="comment">
-        <?= $model->comment ?>
+        <?= $comment->comment ?>
     </div>
 
-    <?= Html::a("Ответить" , ['comment/_form'], ['class' => 'reply'],
-        ['id' => $model->id]
+    <?= Html::a("Ответить" ,null,  ['class' => 'reply']
+//        ['id' => $comment->id]
     ) ?>
 
     <div style="clear: both;"></div>

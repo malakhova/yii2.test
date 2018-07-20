@@ -177,6 +177,7 @@ class CommentController extends Controller
         try
         {
             $parentCommentLevel= $comment->level;
+            $parentCommentParent= $comment->parent_id;
             $allChildComments = $this->commentService->allChildComments($comment);
 
         }
@@ -187,6 +188,7 @@ class CommentController extends Controller
         }
         foreach ($allChildComments as $childComment)
         {
+            $childComment->parent_id = $parentCommentParent;
             $childComment->level = $parentCommentLevel;
             $childComment->save();
         }

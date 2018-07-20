@@ -24,9 +24,9 @@ use yii\widgets\Pjax;
 
     <?php Pjax::begin(['id' => 'comments']) ?>
     <?php
-    foreach ($dataProvider as $model) {
+    foreach ($dataProvider as $comment) {
         echo $this->render('view', [
-            'model' => $model
+            'comment' => $comment
         ]);
     }
     ?>

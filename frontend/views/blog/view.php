@@ -8,8 +8,8 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $post backend\models\Post */
-/* @var $comment backend\models\Comment */
+/* @var $post common\essences\Post */
+/* @var $comment  common\essences\Comment */
 $this->title = $post->title;
 $this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -37,16 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
             margin: 10px 0;
             padding: 10px 20px;
             white-space: pre-wrap;
-        }
-
-        .btn-more {
-            margin: 5px 0;
-            float: right;
-        }
-
-        .btn{
-            padding: 5px 25px;
-            /*text-transform: lowercase;*/
         }
 
         .add-comment{
