@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 /* @var $post common\essences\Post */
 /* @var $comment  common\essences\Comment */
 $this->title = $post->title;
-$this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Блог', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <head>

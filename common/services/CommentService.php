@@ -172,13 +172,19 @@ class CommentService
 
     }
 
-    public function updateLevelOfChildComments(Comment &$comment)
+    public function updateLevelOfChildComments(Comment $comment)
     {
-        $parentCommentId = $comment->id;
         $parentCommentLevel= $comment->level;
-        $allChildComments = $this->allChildComments($comment);
+        $parentCommentParent= $comment->parent_id;
+        try{
+            $allChildComments = $this->allChildComments($comment);
+        }
+        catch (\Exception $exception){
+            throw new \Exception("Comment doesn't need update child comments");
+        }
         foreach ($allChildComments as $childComment)
         {
+            $childComment->parent_id = $parentCommentParent;
             $childComment->level = $parentCommentLevel;
             $childComment->save();
         }
