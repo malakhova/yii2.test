@@ -8,10 +8,9 @@
 
 namespace frontend\services;
 
-use Exception;
 use frontend\forms\ContactForm;
 use Yii;
-use  \yii\mail\MailerInterface;
+use yii\mail\MailerInterface;
 
 class ContactService
 {
@@ -22,6 +21,16 @@ class ContactService
     {
         $this->adminEmail = $adminEmail;
         $this->mailer = $mailer;
+    }
+
+    public function getSendStatus(ContactForm $form)
+    {
+        if ($this->sendEmail($form)) {
+            Yii::$app->session->setFlash('success',
+                'Thank you for contacting us. We will respond to you as soon as possible.');
+        } else {
+            Yii::$app->session->setFlash('error', 'There was an error sending your message.');
+        }
     }
 
     /**
@@ -38,13 +47,5 @@ class ContactService
             ->setSubject($form->subject)
             ->setTextBody($form->body)
             ->send();
-    }
-
-    public function getSendStatus(ContactForm $form){
-        if ($this->sendEmail($form)) {
-            Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-        } else {
-            Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-        }
     }
 }

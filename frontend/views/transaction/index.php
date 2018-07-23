@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\forms\TransactionSearch */
@@ -22,12 +22,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'rowOptions' => function ($model, $key, $index, $grid)
-        {
-            if($model->type == \common\essences\Transaction::TYPE_INCOME) {
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            if ($model->type == \common\essences\Transaction::TYPE_INCOME) {
                 return ['style' => 'background-color:rgba(0,255,0,0.15); font-weight: bold;'];
                 //return ['style' => 'background-color:rgba(0,255,0,0.15);'];
-            } elseif ($model->type == \common\essences\Transaction::TYPE_EXPENSE){
+            } elseif ($model->type == \common\essences\Transaction::TYPE_EXPENSE) {
                 return ['style' => 'background-color:rgba(255,0,0,0.15); font-weight: bold;'];
             }
         },

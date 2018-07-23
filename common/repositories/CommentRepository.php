@@ -13,10 +13,13 @@ use common\essences\Comment;
 
 interface CommentRepository
 {
-    public function getCommentById($id) : Comment;
+    public function getCommentById($id): Comment;
+
     public function getAllComments();
+
     public function getAllCommentsOfPost($postId);
+
     public function getOneLevelCommentsOfPost($postId, $level);
 
-    public function getMaxLevel() : int ;
+    public function getMaxLevel(): int;
 }

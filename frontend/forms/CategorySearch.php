@@ -2,10 +2,9 @@
 
 namespace frontend\forms;
 
-use Yii;
+use common\essences\Category;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\essences\Category;
 
 /**
  * CategorySearch represents the model behind the search form of `common\essences\Category`.

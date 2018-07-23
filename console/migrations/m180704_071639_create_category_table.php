@@ -17,7 +17,7 @@ class m180704_071639_create_category_table extends Migration
             'type' => $this->integer()->notNull(),
             'parent_id' => $this->integer(),
             'name' => $this->string(30)->notNull(),
-        ],'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `parent_id`
         $this->createIndex(

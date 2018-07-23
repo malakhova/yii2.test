@@ -19,11 +19,12 @@ use common\services\PostService;
 use common\services\UserService;
 use Yii;
 use yii\base\BootstrapInterface;
-use  \yii\mail\MailerInterface;
+use yii\mail\MailerInterface;
 
 class SetUp implements BootstrapInterface
 {
-    public function bootstrap($app){
+    public function bootstrap($app)
+    {
         $container = Yii::$container;
         $container->setSingleton(MailerInterface::class, function () use ($app) {
             return $app->mailer;

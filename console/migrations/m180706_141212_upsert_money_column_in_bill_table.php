@@ -12,7 +12,7 @@ class m180706_141212_upsert_money_column_in_bill_table extends Migration
      */
     public function safeUp()
     {
-       // $this->upsert('bill',['money' => $this->decimal()->defaultValue(0.00)], true);
+        // $this->upsert('bill',['money' => $this->decimal()->defaultValue(0.00)], true);
 
     }
 

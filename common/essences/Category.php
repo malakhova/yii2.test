@@ -2,9 +2,8 @@
 
 namespace common\essences;
 
-use Yii;
-use yii\behaviors\SluggableBehavior;
-use \yii\helpers\ArrayHelper;
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "category".
  *
@@ -32,6 +31,48 @@ class Category extends \yii\db\ActiveRecord
         return 'category';
     }
 
+    public static function getTypeValueByName($name, $default = null)
+    {
+        return ArrayHelper::getValue(static::getTypesByName(), $name, $default);
+    }
+
+    public static function getTypesByName()
+    {
+        return array_flip(static::getTypesByValue());
+    }
+
+    /**
+     * @return array
+     * */
+    public static function getTypesByValue()
+    {
+        return [
+            self::TYPE_EXPENSE => 'Расход',
+            self::TYPE_INCOME => 'Доход'
+        ];
+    }
+
+    public static function getTypeNameByValue($type, $default = null)
+    {
+        $types = static::getTypesByValue();
+        return isset($types[$type]) ? $types[$type] : $default;
+    }
+
+    public static function getParentList()
+    {
+        $parentArray = array();
+        $categories = Category::find()->all();
+        foreach ($categories as $category) {
+            if (!in_array($category->parent, $parentArray)) {
+                $parentArray[] = $category->parent;
+
+            }
+        }
+
+        $list = ArrayHelper::map($parentArray, 'id', 'name');
+        return $list;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,7 +82,13 @@ class Category extends \yii\db\ActiveRecord
             [['type', 'name'], 'required'],
             [['type', 'parent_id'], 'integer'],
             [['name'], 'string', 'max' => 30],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['parent_id' => 'id']],
+            [
+                ['parent_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Category::className(),
+                'targetAttribute' => ['parent_id' => 'id']
+            ],
         ];
     }
 
@@ -57,6 +104,11 @@ class Category extends \yii\db\ActiveRecord
             'name' => 'Название',
         ];
     }
+
+//    public static function getTypeNameByValue($value, $default = null)
+//    {
+//        return ArrayHelper::getValue(static::getTypesByValue(), $value, $default);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -75,59 +127,12 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return array
-     * */
-    public static function getTypesByValue()
-    {
-        return [
-            self::TYPE_EXPENSE => 'Расход',
-            self::TYPE_INCOME => 'Доход'
-        ];
-    }
-
-    /**
      * @return int
      */
     public function getParentId()
     {
         return $this->parent_id;
     }
-    public static function getTypesByName()
-    {
-        return array_flip(static::getTypesByValue());
-    }
-
-//    public static function getTypeNameByValue($value, $default = null)
-//    {
-//        return ArrayHelper::getValue(static::getTypesByValue(), $value, $default);
-//    }
-
-    public static function getTypeValueByName($name, $default = null)
-    {
-        return ArrayHelper::getValue(static::getTypesByName(), $name, $default);
-    }
-
-    public static function getTypeNameByValue($type, $default = null)
-    {
-        $types = static::getTypesByValue();
-        return isset($types[$type]) ? $types[$type] : $default;
-    }
-
-    public static function getParentList()
-    {
-        $parentArray = array();
-        $categories = Category::find()->all();
-        foreach ($categories as $category){
-            if(!in_array($category->parent, $parentArray)){
-                $parentArray[] = $category->parent;
-
-            }
-        }
-
-        $list = ArrayHelper::map($parentArray, 'id', 'name');
-        return $list;
-    }
-
 
 
 }

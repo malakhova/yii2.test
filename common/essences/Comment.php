@@ -2,9 +2,6 @@
 
 namespace common\essences;
 
-use common\essences\User;
-use Yii;
-
 /**
  * This is the model class for table "comment".
  *
@@ -31,6 +28,15 @@ class Comment extends \yii\db\ActiveRecord
         return 'comment';
     }
 
+    public static function getMaxLevel()
+    {
+        $maxLevel = Comment::find()
+            ->with(['user', 'post'])
+            ->max('level');
+        return $maxLevel;
+
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,9 +47,27 @@ class Comment extends \yii\db\ActiveRecord
             [['user_id', 'post_id', 'parent_id', 'level'], 'integer'],
             [['created_at'], 'safe'],
             [['comment'], 'string', 'max' => 256],
-            [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Comment::className(), 'targetAttribute' => ['parent_id' => 'id']],
-            [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['post_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['parent_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Comment::className(),
+                'targetAttribute' => ['parent_id' => 'id']
+            ],
+            [
+                ['post_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Post::className(),
+                'targetAttribute' => ['post_id' => 'id']
+            ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::className(),
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -93,14 +117,5 @@ class Comment extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    public static function getMaxLevel()
-    {
-        $maxLevel = Comment::find()
-            ->with(['user','post'])
-            ->max('level');
-        return $maxLevel;
-
     }
 }

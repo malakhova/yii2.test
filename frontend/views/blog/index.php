@@ -6,16 +6,13 @@
  * Time: 15:25
  */
 
-use yii\helpers\Html;
-use yii\grid\GridView;
-
 $this->title = 'Блог';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="post-index">
 
     <h1 class="caption"
-         style="
+        style="
          text-align: center;
          font-size: 24pt;
 "

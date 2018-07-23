@@ -8,19 +8,16 @@
 
 namespace frontend\controllers;
 
-use common\essences\Comment;
 use common\repositories\DatabasePostRepository;
 use common\services\CommentService;
 use common\services\PostService;
 use common\services\UserService;
 use frontend\forms\CommentSearch;
-use Yii;
-use common\essences\Post;
 use frontend\forms\PostSearch;
+use Yii;
 use yii\base\Module;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
 
 class BlogController extends Controller
 {
@@ -30,8 +27,15 @@ class BlogController extends Controller
 
     private $postRepository;
 
-    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, DatabasePostRepository $postRepository, array $config = [])
-    {
+    public function __construct(
+        string $id,
+        Module $module,
+        CommentService $commentService,
+        PostService $postService,
+        UserService $userService,
+        DatabasePostRepository $postRepository,
+        array $config = []
+    ) {
         parent::__construct($id, $module, $config);
         $this->commentService = $commentService;
         $this->postService = $postService;

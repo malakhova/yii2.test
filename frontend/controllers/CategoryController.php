@@ -2,12 +2,12 @@
 
 namespace frontend\controllers;
 
-use Yii;
 use common\essences\Category;
 use frontend\forms\CategorySearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -37,8 +37,9 @@ class CategoryController extends Controller
     {
         $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $types = function($model, $key, $index, $column)  {
-            return $model->getTypesByValue()[$model->type];};
+        $types = function ($model, $key, $index, $column) {
+            return $model->getTypesByValue()[$model->type];
+        };
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -56,18 +57,33 @@ class CategoryController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $types =  $model->getTypesByValue()[$model->type];
-        if($parent = Category::findOne($model->parent_id)){
+        $types = $model->getTypesByValue()[$model->type];
+        if ($parent = Category::findOne($model->parent_id)) {
             $parentName = $parent->name;
+        } else {
+            $parentName = null;
         }
-
-
-        else $parentName = null;
         return $this->render('view', [
-                                            'model' => $model,
+            'model' => $model,
             'types' => $types,
             'parentName' => $parentName
         ]);
+    }
+
+    /**
+     * Finds the Category model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Category the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Category::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -79,7 +95,7 @@ class CategoryController extends Controller
     {
         $model = new Category();
 
-        $types =  $model->getTypesByValue();
+        $types = $model->getTypesByValue();
         $parents = Category::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -103,7 +119,7 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $types =  $model->getTypesByValue();
+        $types = $model->getTypesByValue();
         $parents = Category::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -131,53 +147,33 @@ class CategoryController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Category model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Category the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Category::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-
     public function actionList()
     {
 
-        if(Yii::$app->request->isAjax)
-        {
+        if (Yii::$app->request->isAjax) {
             $type = (int)Yii::$app->request->post('type');
             $allCategory = Category::find()
-                    ->where('type=:type', [':type' => $type])
-                    ->all();
+                ->where('type=:type', [':type' => $type])
+                ->all();
             $treeParents = array();
-            foreach ($allCategory as $category){
-                if(!$category->parent_id){
+            foreach ($allCategory as $category) {
+                if (!$category->parent_id) {
                     $treeParents[] = $category;
-                    foreach ($allCategory as $innerCategory){
-                        if($category->id == $innerCategory->parent_id){
+                    foreach ($allCategory as $innerCategory) {
+                        if ($category->id == $innerCategory->parent_id) {
                             $treeParents[] = $innerCategory;
                         }
                     }
                 }
             }
-            $option ="";
-                foreach($treeParents as $parent){
-                    if(!$parent->parent_id)
-                    {
-                        $option .= '<option value="'.$parent->id.'">'.$parent->name.'</option>';
-                    }
-                    else {
-                        $option .= '<option value="'.$parent->id.'"> --- '.$parent->name.'</option>';
-                    }
+            $option = "";
+            foreach ($treeParents as $parent) {
+                if (!$parent->parent_id) {
+                    $option .= '<option value="' . $parent->id . '">' . $parent->name . '</option>';
+                } else {
+                    $option .= '<option value="' . $parent->id . '"> --- ' . $parent->name . '</option>';
                 }
+            }
         }
 
         return $option;
@@ -189,22 +185,19 @@ class CategoryController extends Controller
     public function actionParentsList()
     {
 
-        if(Yii::$app->request->isAjax)
-        {
+        if (Yii::$app->request->isAjax) {
             $type = (int)Yii::$app->request->post('type');
             $onlyParents = Category::find()
                 ->where('type=:type', [':type' => $type])
                 ->andWhere(['parent_id' => null])
                 ->all();
 
-            $option ="";
-            foreach($onlyParents as $parent){
-                if(!$parent->parent_id)
-                {
-                    $option .= '<option value="'.$parent->id.'">'.$parent->name.'</option>';
-                }
-                else {
-                    $option .= '<option value="'.$parent->id.'"> --- '.$parent->name.'</option>';
+            $option = "";
+            foreach ($onlyParents as $parent) {
+                if (!$parent->parent_id) {
+                    $option .= '<option value="' . $parent->id . '">' . $parent->name . '</option>';
+                } else {
+                    $option .= '<option value="' . $parent->id . '"> --- ' . $parent->name . '</option>';
                 }
             }
         }

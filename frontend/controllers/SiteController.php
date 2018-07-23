@@ -1,21 +1,21 @@
 <?php
+
 namespace frontend\controllers;
 
-use Exception;
+use common\forms\LoginForm;
 use common\services\AuthorizationService;
+use Exception;
+use frontend\forms\ContactForm;
+use frontend\forms\PasswordResetRequestForm;
+use frontend\forms\ResetPasswordForm;
+use frontend\forms\SignupForm;
 use frontend\services\ContactService;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Module;
+use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\forms\LoginForm;
-use frontend\forms\PasswordResetRequestForm;
-use frontend\forms\ResetPasswordForm;
-use frontend\forms\SignupForm;
-use frontend\forms\ContactForm;
 
 /**
  * Site controller
@@ -24,6 +24,7 @@ class SiteController extends Controller
 {
     private $contactService;
     private $authorizationService;
+
     /**
      * {@inheritdoc}
      */
@@ -47,7 +48,6 @@ class SiteController extends Controller
             ],
         ];
     }
-
 
 
     /**
@@ -83,28 +83,22 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if($this->authorizationService->isUserAuthorized())
-        {
+        if ($this->authorizationService->isUserAuthorized()) {
             return $this->goHome();
         }
 
         $form = new LoginForm();
 
         try {
-            if ($form->load(Yii::$app->request->post()) && $form->validate())
-            {
+            if ($form->load(Yii::$app->request->post()) && $form->validate()) {
                 $this->authorizationService->login($form);
                 return $this->goBack();
-            }
-            else
-            {
+            } else {
                 return $this->render('login', [
                     'model' => $form,
                 ]);
             }
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
 //            Yii::$app->session->setFlash('error', 'Incorrect username or password.');
             $form->addError('password', 'Incorrect username or password.');
         }
@@ -136,7 +130,7 @@ class SiteController extends Controller
         } else {
             return $this->render('contact', [
                 'model' => $form,
-                ]);
+            ]);
         }
 
 
@@ -160,13 +154,12 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $form = new SignupForm();
-        try{
+        try {
             if ($form->load(Yii::$app->request->post()) && $form->validate()) {
                 $this->authorizationService->signup($form);
                 return $this->goHome();
             }
-        }
-        catch (Exception $exception){
+        } catch (Exception $exception) {
 
         }
         return $this->render('signup', [
@@ -188,7 +181,8 @@ class SiteController extends Controller
 
                 return $this->goHome();
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                Yii::$app->session->setFlash('error',
+                    'Sorry, we are unable to reset password for the provided email address.');
             }
         }
 

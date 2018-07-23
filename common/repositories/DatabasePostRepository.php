@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
 class DatabasePostRepository implements PostRepository
 {
 
-    public function getPostById($id) : Post
+    public function getPostById($id): Post
     {
         // TODO: Implement getPostById() method.
         if (($post = Post::findOne($id)) !== null) {
@@ -26,10 +26,10 @@ class DatabasePostRepository implements PostRepository
     }
 
 
-    public function getPostBySlug($slug) : Post
+    public function getPostBySlug($slug): Post
     {
         // TODO: Implement getPostBySlug() method.
-        if (($post = Post::findOne(['slug'=>$slug])) !== null) {
+        if (($post = Post::findOne(['slug' => $slug])) !== null) {
             return $post;
         }
         throw new Error("Post not found in Database");

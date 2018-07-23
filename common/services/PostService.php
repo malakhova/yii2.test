@@ -5,10 +5,10 @@
  * Date: 18.07.18
  * Time: 16:49
  */
+
 namespace common\services;
 
 use common\essences\Post;
-use common\essences\User;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
 use yii\helpers\ArrayHelper;
@@ -25,8 +25,7 @@ class PostService
         UserService $userService,
         DatabasePostRepository $postRepository,
         DatabaseUserRepository $userRepository
-    )
-    {
+    ) {
         $this->userService = $userService;
 
         $this->postRepository = $postRepository;
@@ -44,11 +43,10 @@ class PostService
     {
         $authorList = array();
         $allPosts = $this->postRepository->getAllPosts();
-        foreach ($allPosts as $post)
-        {
+        foreach ($allPosts as $post) {
 //            if(!in_array($post, $authorList))
 //            {
-                $authorList[] = $post->user;
+            $authorList[] = $post->user;
 //            }
         }
         $list = ArrayHelper::map($authorList, 'id', 'username');

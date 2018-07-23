@@ -20,7 +20,7 @@ class m180713_125256_create_post_table extends Migration
             'content' => $this->text()->notNull(),
             'description' => $this->string(150)->notNull(),
             'created_at' => $this->dateTime()->notNull()
-        ],'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `user_id`
         $this->createIndex(

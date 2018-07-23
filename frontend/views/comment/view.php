@@ -1,14 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $comment common\essences\Comment */
 
 $currentUserID = Yii::$app->user->id;
 $colorUsername = "";
-if($comment->user_id == $currentUserID) {
+if ($comment->user_id == $currentUserID) {
     $colorUsername = "#2A52BE";
 }
 
@@ -23,6 +22,7 @@ if($comment->user_id == $currentUserID) {
             /*padding-left: ;*/
             border: 1px solid rgb(213, 217, 212);
         }
+
         span {
             font-weight: bold;
             /*color: red;*/
@@ -40,9 +40,10 @@ if($comment->user_id == $currentUserID) {
         .date {
             color: #7c7e7b;
         }
+
         .comment {
-            background-color: rgba(0, 0 , 1, 0.05);
-            padding:10px;
+            background-color: rgba(0, 0, 1, 0.05);
+            padding: 10px;
         }
 
         .btn-more {
@@ -50,7 +51,7 @@ if($comment->user_id == $currentUserID) {
             float: right;
         }
 
-        .btn{
+        .btn {
             padding: 5px 25px;
             /*text-transform: lowercase;*/
         }
@@ -70,17 +71,17 @@ if($comment->user_id == $currentUserID) {
     <link rel="stylesheet" href="../../../backend/css/post.css" type="text/css"/>
 </head>
 <body>
-<div class="short-view" style="margin-left: <?=$marginLevel = 15*$comment->level?>px">
+<div class="short-view" style="margin-left: <?= $marginLevel = 15 * $comment->level ?>px">
 
     <div class="meta-comment">
 
-        <div class="username" style=" color: <?= $colorUsername?>;"><?= $comment->user->username ?></div>
+        <div class="username" style=" color: <?= $colorUsername ?>;"><?= $comment->user->username ?></div>
 
         <div class="date"><?= $comment->created_at ?></div>
         <?php
-        if($comment->parent_id != null) {
+        if ($comment->parent_id != null) {
             $usernameParentComment = $comment->parent->user->username;
-            echo "<div class=\"reply-to\">"."в ответ "."<span class='reply-to-username'>"."$usernameParentComment"."</span> </div>";
+            echo "<div class=\"reply-to\">" . "в ответ " . "<span class='reply-to-username'>" . "$usernameParentComment" . "</span> </div>";
         }
         ?>
     </div>
@@ -89,7 +90,7 @@ if($comment->user_id == $currentUserID) {
         <?= $comment->comment ?>
     </div>
 
-    <?= Html::a("Ответить" ,null,  ['class' => 'reply']
+    <?= Html::a("Ответить", null, ['class' => 'reply']
 //        ['id' => $comment->id]
     ) ?>
 

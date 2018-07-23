@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -26,9 +25,9 @@ $this->registerJs(
     <?php $form = ActiveForm::begin(['options' => ['data-pjax' => true]]); ?>
 
     <?php
-    if($comment->parent_id != null) {
+    if ($comment->parent_id != null) {
         $usernameParentComment = $comment->parent->user->username;
-        echo "<div class=\"reply-to\">"."в ответ "."<span class='reply-to-username'>"."$usernameParentComment"."</span> </div>";
+        echo "<div class=\"reply-to\">" . "в ответ " . "<span class='reply-to-username'>" . "$usernameParentComment" . "</span> </div>";
     }
     ?>
     <?= $form->field($comment, 'comment')->textarea(['rows' => 2]) ?>

@@ -20,7 +20,7 @@ class m180706_134504_create_transaction_table extends Migration
             'bill_id' => $this->integer()->notNull(),
             'money' => $this->decimal()->notNull(),
             'created_at' => $this->dateTime()->notNull()
-        ],'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `user_id`
         $this->createIndex(

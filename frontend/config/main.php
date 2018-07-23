@@ -1,5 +1,7 @@
 <?php
+
 use yii\filters\AccessControl;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -12,7 +14,8 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => [
         'log',
-        'common\bootstrap\SetUp'],
+        'common\bootstrap\SetUp'
+    ],
     'controllerNamespace' => 'frontend\controllers',
 
     'components' => [
@@ -22,7 +25,9 @@ return [
         'user' => [
             'identityClass' => 'common\essences\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true,
+            'identityCookie' => [
+                'name' => '_identity-frontend',
+                'httpOnly' => true,
                 'domain' => '.test-project.test'
             ],
         ],
@@ -48,7 +53,7 @@ return [
         ],
         'backendUrlManager' => require __DIR__ . '/../../backend/config/urlManager.php',
         'frontendUrlManager' => require __DIR__ . '/urlManager.php',
-        'urlManager' => function (){
+        'urlManager' => function () {
             return \Yii::$app->get('frontendUrlManager');
         }
 //        'urlManager' => [
@@ -60,7 +65,7 @@ return [
     ],
     'as access' => [
         'class' => AccessControl::className(),
-        'except' =>[
+        'except' => [
             'gii',
             'site/about',
             'site/contact',
@@ -76,12 +81,12 @@ return [
 //                        'allow' => true,
 //                        'roles' => ['?'],
 //                    ],
-                    [
-                        //'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
+            [
+                //'actions' => ['logout'],
+                'allow' => true,
+                'roles' => ['@'],
+            ],
+        ],
     ],
     'params' => $params,
 ];

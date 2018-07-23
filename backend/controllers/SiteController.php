@@ -1,14 +1,14 @@
 <?php
+
 namespace backend\controllers;
 
+use common\forms\LoginForm;
 use common\services\AuthorizationService;
 use Exception;
 use Yii;
 use yii\base\Module;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\forms\LoginForm;
+use yii\web\Controller;
 
 /**
  * Site controller
@@ -82,28 +82,22 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if($this->authorizationService->isUserAuthorized())
-        {
+        if ($this->authorizationService->isUserAuthorized()) {
             return $this->goHome();
         }
 
         $form = new LoginForm();
 
         try {
-            if ($form->load(Yii::$app->request->post()) && $form->validate())
-            {
+            if ($form->load(Yii::$app->request->post()) && $form->validate()) {
                 $this->authorizationService->login($form);
                 return $this->goBack();
-            }
-            else
-            {
+            } else {
                 return $this->render('login', [
                     'model' => $form,
                 ]);
             }
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
 //            Yii::$app->session->setFlash('error', 'Incorrect username or password.');
             $form->addError('password', 'Incorrect username or password.');
         }

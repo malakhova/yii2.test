@@ -10,10 +10,9 @@ namespace common\services;
 
 
 use common\forms\LoginForm;
+use common\repositories\DatabaseUserRepository;
 use Exception;
 use frontend\forms\SignupForm;
-use common\repositories\DatabaseUserRepository;
-use Error;
 use Yii;
 
 /**
@@ -28,7 +27,7 @@ class AuthorizationService
         $this->userRepository = new DatabaseUserRepository();
     }
 
-    public function isUserAuthorized() :bool
+    public function isUserAuthorized(): bool
     {
         return !Yii::$app->user->isGuest;
     }
@@ -60,14 +59,15 @@ class AuthorizationService
     public function login(LoginForm $form)
     {
         $user = $this->userRepository->getUserByUsername($form->username);
-        if(!$user->validatePassword($form->password)){
+        if (!$user->validatePassword($form->password)) {
             throw new Exception("Password validate if failed");
         }
         Yii::$app->user->login($user, $form->rememberMe ? 3600 * 24 * 30 : 0);
 
     }
 
-    public function logout(){
+    public function logout()
+    {
         Yii::$app->user->logout();
     }
 
@@ -78,8 +78,7 @@ class AuthorizationService
         $password = $form->password;
 
         $user = $this->userRepository->createUser($username, $email, $password);
-        if(!Yii::$app->getUser()->login($user))
-        {
+        if (!Yii::$app->getUser()->login($user)) {
             throw new Exception();
         }
 

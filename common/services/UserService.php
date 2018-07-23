@@ -9,8 +9,6 @@
 namespace common\services;
 
 
-use common\essences\User;
-use common\repositories\DatabaseUserRepository;
 use Yii;
 
 class UserService

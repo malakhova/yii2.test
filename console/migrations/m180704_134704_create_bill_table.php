@@ -17,7 +17,7 @@ class m180704_134704_create_bill_table extends Migration
             'user_id' => $this->integer()->notNull(),
             'name' => $this->string(30)->notNull()->defaultValue("Наличные"),
             'money' => $this->decimal()->notNull()->defaultValue(0),
-        ],'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `user_id`
         $this->createIndex(

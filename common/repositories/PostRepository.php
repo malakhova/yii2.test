@@ -13,8 +13,11 @@ use common\essences\Post;
 
 interface PostRepository
 {
-    public function getPostById($id) : Post;
-    public function getPostBySlug($id) : Post;
+    public function getPostById($id): Post;
+
+    public function getPostBySlug($id): Post;
+
     public function getListOfPosts();
+
     public function getAllPosts();
 }

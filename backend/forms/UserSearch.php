@@ -2,10 +2,9 @@
 
 namespace backend\forms;
 
-use Yii;
+use backend\essences\User;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\essences\User;
 
 /**
  * UserSearch represents the model behind the search form of `backend\essences\User`.

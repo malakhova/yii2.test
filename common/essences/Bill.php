@@ -2,8 +2,6 @@
 
 namespace common\essences;
 
-use Yii;
-
 /**
  * This is the model class for table "bill".
  *
@@ -34,7 +32,13 @@ class Bill extends \yii\db\ActiveRecord
             [['user_id'], 'integer'],
             [['money'], 'number'],
             [['name'], 'string', 'max' => 30],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::className(),
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 

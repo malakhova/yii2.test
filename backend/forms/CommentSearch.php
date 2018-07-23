@@ -2,10 +2,9 @@
 
 namespace backend\forms;
 
-use Yii;
+use common\essences\Comment as CommentModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\essences\Comment as CommentModel;
 
 /**
  * Comment represents the model behind the search form of `common\essences\Comment`.

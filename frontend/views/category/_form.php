@@ -1,9 +1,9 @@
 <?php
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use \yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\essences\Category */
@@ -19,7 +19,7 @@ use yii\helpers\Url;
             'prompt' => 'Выбрать тип...',
             'onchange' => '
                   $.post(
-                  "'.Url::toRoute('category/parents-list').'",
+                  "' . Url::toRoute('category/parents-list') . '",
                   {type : $(this).val()},
                   function(data){
                       $("select#category").html(data).attr("disabled", false)

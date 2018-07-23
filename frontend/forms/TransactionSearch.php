@@ -2,10 +2,10 @@
 
 namespace frontend\forms;
 
+use common\essences\Transaction;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\essences\Transaction;
 
 /**
  * TransactionSearch represents the model behind the search form of `common\essences\Transaction`.

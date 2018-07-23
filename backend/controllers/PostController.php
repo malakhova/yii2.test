@@ -2,18 +2,15 @@
 
 namespace backend\controllers;
 
+use backend\forms\PostSearch;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
-use common\repositories\UserRepository;
 use common\services\PostService;
-use common\services\UserService;
 use Yii;
-use common\essences\Post;
-use backend\forms\PostSearch;
 use yii\base\Module;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -27,8 +24,14 @@ class PostController extends Controller
 
     private $users;
 
-    public function __construct(string $id, Module $module, PostService $postService, DatabaseUserRepository $userRepository,  DatabasePostRepository $postRepository,array $config = [])
-    {
+    public function __construct(
+        string $id,
+        Module $module,
+        PostService $postService,
+        DatabaseUserRepository $userRepository,
+        DatabasePostRepository $postRepository,
+        array $config = []
+    ) {
         parent::__construct($id, $module, $config);
         $this->postService = $postService;
 

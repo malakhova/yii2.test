@@ -10,8 +10,6 @@ namespace common\repositories;
 
 
 use common\essences\Comment;
-use common\essences\Post;
-use Error;
 
 class DatabaseCommentRepository implements CommentRepository
 {
@@ -60,10 +58,10 @@ class DatabaseCommentRepository implements CommentRepository
 
         // TODO: Implement getOneLevelCommentsOfPost() method.
         return $query
-                ->where(['level' => $level])
-                ->andWhere(['post_id' => $postId])
-                ->orderBy('id')
-                ->all();
+            ->where(['level' => $level])
+            ->andWhere(['post_id' => $postId])
+            ->orderBy('id')
+            ->all();
     }
 
 
@@ -71,7 +69,7 @@ class DatabaseCommentRepository implements CommentRepository
     {
         // TODO: Implement getMaxLevel() method.
         return Comment::find()
-            ->with(['user','post'])
+            ->with(['user', 'post'])
             ->max('level');
     }
 }

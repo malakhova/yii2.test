@@ -2,16 +2,15 @@
 
 namespace frontend\controllers;
 
-use DateTime;
 use common\essences\Bill;
 use common\essences\Category;
-use common\essences\User;
-use Yii;
 use common\essences\Transaction;
+use common\essences\User;
 use frontend\forms\TransactionSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * TransactionController implements the CRUD actions for Transaction model.
@@ -42,8 +41,9 @@ class TransactionController extends Controller
     {
         $searchModel = new TransactionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $types = function($model, $key, $index, $column)  {
-            return $model->getTypesByValue()[$model->type];};
+        $types = function ($model, $key, $index, $column) {
+            return $model->getTypesByValue()[$model->type];
+        };
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -61,14 +61,14 @@ class TransactionController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        if($user = User::findOne($model->user_id)){
+        if ($user = User::findOne($model->user_id)) {
             $userName = $user->username;
         }
-        $types =  $model->getTypesByValue()[$model->type];
-        if($bill = Bill::findOne($model->bill_id)){
+        $types = $model->getTypesByValue()[$model->type];
+        if ($bill = Bill::findOne($model->bill_id)) {
             $billName = $bill->name;
         }
-        if($category = Category::findOne($model->category_id)){
+        if ($category = Category::findOne($model->category_id)) {
             $categoryName = $category->name;
         }
         return $this->render('view', [
@@ -81,6 +81,22 @@ class TransactionController extends Controller
     }
 
     /**
+     * Finds the Transaction model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Transaction the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Transaction::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
      * Creates a new Transaction model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -88,7 +104,7 @@ class TransactionController extends Controller
     public function actionCreate()
     {
         $model = new Transaction();
-        $types =  $model->getTypesByValue();
+        $types = $model->getTypesByValue();
         $categories = Category::find()->all();
 
         /** @var common\essences\User $userModel */
@@ -98,13 +114,12 @@ class TransactionController extends Controller
         $bills = Bill::find()->all();
 
 
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $bill = Bill::findOne($model->bill_id);
-            if($model->type == Transaction::TYPE_EXPENSE){
+            if ($model->type == Transaction::TYPE_EXPENSE) {
                 $bill->money -= $model->money;
                 $bill->update();
-            } elseif ($model->type == Transaction::TYPE_INCOME){
+            } elseif ($model->type == Transaction::TYPE_INCOME) {
                 $bill->money += $model->money;
                 $bill->update();
             }
@@ -131,7 +146,7 @@ class TransactionController extends Controller
         $model = $this->findModel($id);
 
         // списки для выбора
-        $types =  $model->getTypesByValue();
+        $types = $model->getTypesByValue();
         $categories = Category::find()->all();
         $bills = Bill::find()->all();
 
@@ -143,20 +158,20 @@ class TransactionController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             // возращаем значение счёта в состояние без использованной суммы
-            if($currentType == Transaction::TYPE_EXPENSE){   // если был расход - добавляем к счёту деньги
+            if ($currentType == Transaction::TYPE_EXPENSE) {   // если был расход - добавляем к счёту деньги
                 $currentBill->money += $currentTransactionMoney;
                 $currentBill->update();
-            }elseif ($currentType == Transaction::TYPE_INCOME){     // если был доход - вычитаем из счёта деньги
+            } elseif ($currentType == Transaction::TYPE_INCOME) {     // если был доход - вычитаем из счёта деньги
                 $currentBill->money -= $currentTransactionMoney;
                 $currentBill->update();
             }
 
             //редактируем новое значение счёта
             $bill = Bill::findOne($model->bill_id);
-            if($model->type == Transaction::TYPE_EXPENSE){
+            if ($model->type == Transaction::TYPE_EXPENSE) {
                 $bill->money -= $model->money;
                 $bill->update();
-            } elseif ($model->type == Transaction::TYPE_INCOME){
+            } elseif ($model->type == Transaction::TYPE_INCOME) {
                 $bill->money += $model->money;
                 $bill->update();
             }
@@ -184,10 +199,10 @@ class TransactionController extends Controller
         $bill = Bill::findOne($model->bill_id);
 
         $currentBill = $bill->money;
-        if($model->type == Transaction::TYPE_EXPENSE){
+        if ($model->type == Transaction::TYPE_EXPENSE) {
             $bill->money += $model->money;
             $bill->update();
-        } elseif ($model->type == Transaction::TYPE_INCOME){
+        } elseif ($model->type == Transaction::TYPE_INCOME) {
             $bill->money -= $model->money;
             $bill->update();
 
@@ -197,35 +212,18 @@ class TransactionController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Transaction model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Transaction the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Transaction::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
     public function actionList()
     {
 
-        if(Yii::$app->request->isAjax)
-        {
+        if (Yii::$app->request->isAjax) {
             $type = (int)Yii::$app->request->post('type');
             $categories = Category::find()
                 ->where('type=:type', [':type' => $type])
                 ->all();
 
-            $option ="";
-            foreach($categories as $category){
-                $option .= '<option value="'.$category->id.'">'.$category->name.'</option>';
+            $option = "";
+            foreach ($categories as $category) {
+                $option .= '<option value="' . $category->id . '">' . $category->name . '</option>';
             }
         }
 

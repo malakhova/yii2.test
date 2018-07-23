@@ -2,8 +2,6 @@
 
 namespace backend\essences;
 
-use Yii;
-
 /**
  * This is the model class for table "user".
  *

@@ -1,10 +1,9 @@
 <?php
+
 namespace common\forms;
 
-use Yii;
-use yii\base\Model;
-use common\essences\User;
 use common\repositories\DatabaseUserRepository;
+use yii\base\Model;
 
 /**
  * Login form

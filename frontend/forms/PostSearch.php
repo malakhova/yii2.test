@@ -2,10 +2,9 @@
 
 namespace frontend\forms;
 
-use Yii;
+use common\essences\Post;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\essences\Post;
 
 /**
  * PostSearch represents the model behind the search form of `backend\models\Post`.

@@ -1,5 +1,7 @@
 <?php
+
 use yii\filters\AccessControl;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -13,7 +15,8 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => [
         'log',
-        'common\bootstrap\SetUp'],
+        'common\bootstrap\SetUp'
+    ],
     'modules' => [],
     'components' => [
         'request' => [
@@ -22,7 +25,9 @@ return [
         'user' => [
             'identityClass' => 'common\essences\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true,
+            'identityCookie' => [
+                'name' => '_identity-backend',
+                'httpOnly' => true,
                 'domain' => '.test-project.test'
             ],
         ],
@@ -46,9 +51,9 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'frontendUrlManager' => require __DIR__ .'/../../frontend/config/urlManager.php',
+        'frontendUrlManager' => require __DIR__ . '/../../frontend/config/urlManager.php',
         'backendUrlManager' => require __DIR__ . '/urlManager.php',
-        'urlManager' => function (){
+        'urlManager' => function () {
             return Yii::$app->get('frontendUrlManager');
         }
 //        'urlManager' => [
@@ -60,10 +65,11 @@ return [
     ],
     'as access' => [
         'class' => AccessControl::className(),
-        'except' =>[
+        'except' => [
             'site/login',
             'site/error',
-            'site/index',],
+            'site/index',
+        ],
         'rules' => [
             [
                 'allow' => true,

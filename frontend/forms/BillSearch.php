@@ -2,10 +2,10 @@
 
 namespace frontend\forms;
 
+use common\essences\Bill;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\essences\Bill;
 
 /**
  * BillSearch represents the model behind the search form of `frontend\essences\Bill`.

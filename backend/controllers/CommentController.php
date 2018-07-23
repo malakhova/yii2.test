@@ -2,22 +2,19 @@
 
 namespace backend\controllers;
 
-use common\essences\Post;
-use common\essences\User;
+use backend\forms\CommentSearch;
+use common\essences\Comment;
 use common\repositories\DatabaseCommentRepository;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
 use common\services\CommentService;
 use common\services\PostService;
-use common\services\UserService;
 use Exception;
 use Yii;
-use common\essences\Comment;
-use backend\forms\CommentSearch;
 use yii\base\Module;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CommentController implements the CRUD actions for Comment model.
@@ -35,14 +32,16 @@ class CommentController extends Controller
     private $posts;
     private $comments;
 
-    public function __construct(string $id, Module $module,
-                                CommentService $commentService,
-                                PostService $postService,
-                                DatabaseUserRepository $userRepository,
-                                DatabasePostRepository $postRepository,
-                                DatabaseCommentRepository $commentRepository,
-                                array $config = [])
-    {
+    public function __construct(
+        string $id,
+        Module $module,
+        CommentService $commentService,
+        PostService $postService,
+        DatabaseUserRepository $userRepository,
+        DatabasePostRepository $postRepository,
+        DatabaseCommentRepository $commentRepository,
+        array $config = []
+    ) {
         parent::__construct($id, $module, $config);
         $this->commentService = $commentService;
         $this->postService = $postService;
@@ -52,8 +51,8 @@ class CommentController extends Controller
         $this->commentRepository = $commentRepository;
 
         $this->users = $this->userRepository->getAllUsers();
-        $this->posts =  $this->postRepository->getAllPosts();
-        $this->comments =  $this->commentRepository->getAllComments();
+        $this->posts = $this->postRepository->getAllPosts();
+        $this->comments = $this->commentRepository->getAllComments();
     }
 
     /**
@@ -107,9 +106,7 @@ class CommentController extends Controller
         try {
             $usernameOfParentComment = $this->commentService->getUsernameOfParentComment($comment);
             $commentOfParentComment = $this->commentService->getCommentOfParentComment($comment);
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             $usernameOfParentComment = null;
             $commentOfParentComment = null;
         }
@@ -180,22 +177,16 @@ class CommentController extends Controller
      */
     public function actionDelete($id)
     {
-        try
-        {
+        try {
             $comment = $this->commentRepository->getCommentById($id);
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             return $this->redirect(['index']);
         }
 
-        try
-        {
+        try {
             $this->commentService->updateLevelOfChildComments($comment);
 
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             $comment->delete();
             return $this->redirect(['index']);
         }
@@ -205,12 +196,11 @@ class CommentController extends Controller
     }
 
 
-    /* @var $comment Comment*/
+    /* @var $comment Comment */
     public function actionCreateListOfCommentParents()
     {
 
-        if(Yii::$app->request->isAjax)
-        {
+        if (Yii::$app->request->isAjax) {
             $postId = (int)Yii::$app->request->post('postId');
             $option = $this->commentService->createListOfCommentParents($postId);
         }

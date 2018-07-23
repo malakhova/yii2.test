@@ -1,9 +1,9 @@
 <?php
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use \yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $comment common\essences\Comment */
@@ -23,7 +23,7 @@ use yii\helpers\Url;
             'prompt' => 'Выбрать пост...',
             'onchange' => '
                   $.post(
-                  "'.Url::toRoute('comment/create-list-of-comment-parents').'",
+                  "' . Url::toRoute('comment/create-list-of-comment-parents') . '",
                   {postId : $(this).val()},
                   function(data){
                       $("select#comments").html(data).attr("disabled", false)

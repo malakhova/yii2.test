@@ -2,8 +2,6 @@
 
 namespace common\essences;
 
-use Yii;
-use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -26,12 +24,51 @@ class Transaction extends \yii\db\ActiveRecord
 
     const TYPE_EXPENSE = 1;
     const TYPE_INCOME = 2;
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'transaction';
+    }
+
+    public static function getTypesByValue()
+    {
+        return [
+            self::TYPE_EXPENSE => 'Расход',
+            self::TYPE_INCOME => 'Доход'
+        ];
+    }
+
+    public static function getCategoryList()
+    {
+        $categoryArray = array();
+        $categories = Category::find()->all();
+        foreach ($categories as $category) {
+            if (!in_array($category, $categoryArray)) {
+                $categoryArray[] = $category;
+
+            }
+        }
+
+        $list = ArrayHelper::map($categoryArray, 'id', 'name');
+        return $list;
+    }
+
+    public static function getBillList()
+    {
+        $billArray = array();
+        $bills = Bill::find()->all();
+        foreach ($bills as $bill) {
+            if (!in_array($bill, $billArray)) {
+                $billArray[] = $bill;
+
+            }
+        }
+
+        $list = ArrayHelper::map($billArray, 'id', 'name');
+        return $list;
     }
 
     /**
@@ -44,9 +81,27 @@ class Transaction extends \yii\db\ActiveRecord
             [['user_id', 'type', 'category_id', 'bill_id'], 'integer'],
             [['money'], 'number'],
             [['created_at'], 'safe'],
-            [['bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_id' => 'id']],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['bill_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Bill::className(),
+                'targetAttribute' => ['bill_id' => 'id']
+            ],
+            [
+                ['category_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Category::className(),
+                'targetAttribute' => ['category_id' => 'id']
+            ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::className(),
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -65,7 +120,6 @@ class Transaction extends \yii\db\ActiveRecord
             'created_at' => 'Дата/время',
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -89,43 +143,5 @@ class Transaction extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    public static function getTypesByValue()
-    {
-        return [
-            self::TYPE_EXPENSE => 'Расход',
-            self::TYPE_INCOME => 'Доход'
-        ];
-    }
-
-    public static function getCategoryList()
-    {
-        $categoryArray = array();
-        $categories = Category::find()->all();
-        foreach ($categories as $category){
-            if(!in_array($category, $categoryArray)){
-                $categoryArray[] = $category;
-
-            }
-        }
-
-        $list = ArrayHelper::map($categoryArray, 'id', 'name');
-        return $list;
-    }
-
-    public static function getBillList()
-    {
-        $billArray = array();
-        $bills = Bill::find()->all();
-        foreach ($bills as $bill){
-            if(!in_array($bill, $billArray)){
-                $billArray[] = $bill;
-
-            }
-        }
-
-        $list = ArrayHelper::map($billArray, 'id', 'name');
-        return $list;
     }
 }

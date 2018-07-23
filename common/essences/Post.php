@@ -2,12 +2,8 @@
 
 namespace common\essences;
 
-use common\essences\User;
-use Yii;
 use yii\behaviors\SluggableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\db\Expression;
 
 /**
  * This is the model class for table "post".
@@ -24,6 +20,14 @@ use yii\db\Expression;
  */
 class Post extends ActiveRecord
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return 'post';
+    }
+
     public function behaviors()
     {
         return [
@@ -52,13 +56,6 @@ class Post extends ActiveRecord
 //            ]
         ];
     }
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'post';
-    }
 
     /**
      * {@inheritdoc}
@@ -72,7 +69,13 @@ class Post extends ActiveRecord
             [['created_at'], 'safe'],
             [['title', 'slug'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 150],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::className(),
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
