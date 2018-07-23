@@ -59,12 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="add-comment">
         <?=
-        $this->render('../comment/index',[
+        $this->render('../comment/index', [
             'comment' => $comment,
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,]);
+            'dataProvider' => $dataProvider,
+            ]);
         ?>
     </div>
 </body>
-
 

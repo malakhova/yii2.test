@@ -41,7 +41,11 @@ class CommentSearch extends CommentModel
      */
     public function search($params)
     {
-        $query = CommentModel::find();
+        $query = CommentModel::find()
+            ->with(['user'])
+            ->with(['post'])
+            ->with(['parent'])
+            ->with(['parent.user']);
 
         // add conditions that should always apply here
 
@@ -53,7 +57,7 @@ class CommentSearch extends CommentModel
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+//             $query->where('0=1');
             return $dataProvider;
         }
 

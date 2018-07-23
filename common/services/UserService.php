@@ -15,11 +15,11 @@ use Yii;
 
 class UserService
 {
-    private $userRepository;
+//    private $userRepository;
 
-    public function __construct(DatabaseUserRepository $userRepository)
+    public function __construct()
     {
-        $this->userRepository = $userRepository;
+//        $this->userRepository = $userRepository;
     }
 
     public function getCurrentUser()
@@ -27,18 +27,18 @@ class UserService
         return Yii::$app->user->id;
     }
 
-    public function filterList()
-    {
-        return $this->userRepository->getListOfUsers();
-    }
+//    public function filterList()
+//    {
+//        return $this->userRepository->getListOfUsers();
+//    }
 
-    public function findUserById($id) : User
-    {
-        return $this->userRepository->getUserById($id);
-    }
+//    public function findUserById($id) : User
+//    {
+//        return $this->userRepository->getUserById($id);
+//    }
 
-    public function findAllUsers()
-    {
-        return $this->userRepository->getAllUsers();
-    }
+//    public function findAllUsers()
+//    {
+//        return $this->userRepository->getAllUsers();
+//    }
 }

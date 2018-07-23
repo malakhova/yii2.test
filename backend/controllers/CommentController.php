@@ -4,6 +4,9 @@ namespace backend\controllers;
 
 use common\essences\Post;
 use common\essences\User;
+use common\repositories\DatabaseCommentRepository;
+use common\repositories\DatabasePostRepository;
+use common\repositories\DatabaseUserRepository;
 use common\services\CommentService;
 use common\services\PostService;
 use common\services\UserService;
@@ -23,22 +26,34 @@ class CommentController extends Controller
 {
     private $commentService;
     private $postService;
-    private $userService;
+
+    private $userRepository;
+    private $postRepository;
+    private $commentRepository;
 
     private $users;
     private $posts;
     private $comments;
 
-    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, array $config = [])
+    public function __construct(string $id, Module $module,
+                                CommentService $commentService,
+                                PostService $postService,
+                                DatabaseUserRepository $userRepository,
+                                DatabasePostRepository $postRepository,
+                                DatabaseCommentRepository $commentRepository,
+                                array $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->commentService = $commentService;
         $this->postService = $postService;
-        $this->userService = $userService;
 
-        $this->users = $this->userService->findAllUsers();
-        $this->posts =  $this->postService->findAllPosts();
-        $this->comments =  $this->commentService->findAllComments();
+        $this->userRepository = $userRepository;
+        $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
+
+        $this->users = $this->userRepository->getAllUsers();
+        $this->posts =  $this->postRepository->getAllPosts();
+        $this->comments =  $this->commentRepository->getAllComments();
     }
 
     /**
@@ -65,14 +80,14 @@ class CommentController extends Controller
         $searchModel = new CommentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $postsFilter = $this->postService->filterList();
-        $userFilter = $this->commentService->filterAuthorList();
+//        $postsFilter = $this->postRepository->getListOfPosts();
+//        $userFilter = $this->commentService->filterAuthorList();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'postsFilter' => $postsFilter,
-            'userFilter' => $userFilter
+//            'postsFilter' => $postsFilter,
+//            'userFilter' => $userFilter
         ]);
     }
 
@@ -84,7 +99,7 @@ class CommentController extends Controller
      */
     public function actionView($id)
     {
-        $comment = $this->commentService->findCommentById($id);
+        $comment = $this->commentRepository->getCommentById($id);
 
         $authorUsername = $this->commentService->getUsernameOfAuthor($comment);
         $postTitle = $this->commentService->getTitleOfPost($comment);
@@ -141,7 +156,7 @@ class CommentController extends Controller
      */
     public function actionUpdate($id)
     {
-        $comment = $this->commentService->findCommentById($id);
+        $comment = $this->commentRepository->getCommentById($id);
 
 
         if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
@@ -167,7 +182,7 @@ class CommentController extends Controller
     {
         try
         {
-            $comment = $this->commentService->findCommentById($id);
+            $comment = $this->commentRepository->getCommentById($id);
         }
         catch (Exception $exception)
         {
@@ -196,8 +211,8 @@ class CommentController extends Controller
 
         if(Yii::$app->request->isAjax)
         {
-            $post = (int)Yii::$app->request->post('post');
-            $option = $this->commentService->createListOfCommentParents($post);
+            $postId = (int)Yii::$app->request->post('postId');
+            $option = $this->commentService->createListOfCommentParents($postId);
         }
 
         return $option;

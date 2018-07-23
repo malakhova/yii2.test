@@ -14,6 +14,7 @@ use common\essences\User;
 use common\repositories\DatabaseCommentRepository;
 use common\repositories\DatabasePostRepository;
 use common\repositories\DatabaseUserRepository;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use yii\helpers\ArrayHelper;
 
 class CommentService
@@ -34,15 +35,9 @@ class CommentService
         DatabasePostRepository $postRepository
     )
     {
-//        $this->userService = new UserService();
-//        $this->postService = new PostService();
 
         $this->userService = $userService;
         $this->postService = $postService;
-
-//        $this->commentRepository = new DatabaseCommentRepository();
-//        $this->userRepository = new DatabaseUserRepository();
-//        $this->postRepository = new DatabasePostRepository();
 
         $this->commentRepository = $commentRepository;
         $this->userRepository = $userRepository;
@@ -52,7 +47,7 @@ class CommentService
 
     public function createBackendComment(){
         $comment = new Comment();
-        $comment->created_at = date('Y.m.d H:i');
+        $comment->created_at = date('Y.m.d H:i:s');
         return $comment;
     }
 
@@ -61,77 +56,52 @@ class CommentService
         $comment = new Comment();
         $comment->user_id = $this->userService->getCurrentUser();
         $comment->post_id = $postId;
-        $comment->created_at = date('Y.m.d H:i');
+        $comment->created_at = date('Y.m.d H:i:s');
         return $comment;
     }
 
     public function treeCommentsView($postId)
     {
         $treeComments = array();
-//        $currentPostComments = Comment::find()->where(['post_id' => $postId])->all();
-        $firstLevelComments = Comment::find()->where(['level' => 0])->andWhere(['post_id' => $postId])->all();
-        foreach ($firstLevelComments as $comment)
+        $allCommentsOfPost = $this->commentRepository->getAllCommentsOfPost($postId);
+        $originalComments = $this->oneLevelCommentsOfPost($allCommentsOfPost, 0);
+
+//        $treeComments = array_merge($treeComments,$originalComments);
+
+        foreach ($originalComments as $comment)
         {
             $treeComments[] = $comment;
         }
 
-
-        for ($level = 1; $level <= Comment::getMaxLevel(); $level++) {
-            $oneLevelComments = Comment::find()->where(['level' => $level])->andWhere(['post_id' => $postId])->all();
-            foreach ($oneLevelComments as $comment){
-                for ($i = 0; $i < count($treeComments); $i++){
-                    if($comment->parent_id == $treeComments[$i]->id) {
-                        $key = $i+1;
-                        array_splice($treeComments, $key, 0, array($comment));
-                        break ;
-                    }
-                }
-
+        $maxLevel = $this->commentRepository->getMaxLevel();
+        for ($level = 1; $level <= $maxLevel; $level++) {
+            $oneLevelComments = $this->oneLevelCommentsOfPost($allCommentsOfPost, $level);
+            for ($i = 0; $i < count($treeComments); $i++)
+            {
+                $parentId = $treeComments[$i]->id;
+                $oneParentComments = $this->oneParentCommentsOfPost($oneLevelComments, $parentId);
+                $key = $i+1;
+                array_splice($treeComments, $key, 0, $oneParentComments);
             }
         }
 
         return $treeComments;
     }
 
-
-
-    public function findAllComments()
+    public function getUsernameOfAuthor(Comment $comment)
     {
-        return $this->commentRepository->getAllComments();
+        return $comment->user->username;
     }
 
-    public function findCommentById($id)
+    public function getTitleOfPost(Comment $comment)
     {
-        return $this->commentRepository->getCommentById($id);
-    }
-
-
-
-    public function findAuthorOfComment($comment) : User
-    {
-        return $this->userService->findUserById($comment->user_id);
-    }
-
-    public function findPostOfComment($comment) : Post
-    {
-        return $this->postService->findPostById($comment->post_id);
-    }
-
-    public function getUsernameOfAuthor($comment)
-    {
-        $user = $this->findAuthorOfComment($comment);
-        return $user->username;
-    }
-
-    public function getTitleOfPost($comment)
-    {
-        $post = $this->findPostOfComment($comment);
-        return $post->title;
+//        $post = $this->findPostOfComment($comment);
+        return $comment->post->title;
     }
 
     public function getUsernameOfParentComment(Comment $comment)
     {
-        if($replyUser = $this->findAuthorOfComment($comment->parent)){
+        if($replyUser = $comment->parent->user){
             return $replyUser->username;
         } else throw new \Error("Comment doesn't have parent comment");
     }
@@ -144,8 +114,6 @@ class CommentService
         } else throw new \Error("Comment doesn't have parent comment");
 
     }
-
-
 
     public function setCommentLevel(Comment $comment)
     {
@@ -163,7 +131,7 @@ class CommentService
     public function allChildComments(Comment $comment)
     {
         $parentCommentId = $comment->id;
-        $allChildComments = Comment::find()->where(['parent_id' => $parentCommentId])->all();
+        $allChildComments = Comment::find()->with(['user','post'])->where(['parent_id' => $parentCommentId])->all();
         if($allChildComments){
             return $allChildComments;
         } else {
@@ -190,10 +158,11 @@ class CommentService
         }
     }
 
-    public function createListOfCommentParents(int $post)
+    public function createListOfCommentParents(int $postId)
     {
         $comments = Comment::find()
-            ->where('post_id=:post', [':post' => $post])
+            ->with(['user','post'])
+            ->where('post_id=:postId', [':postId' => $postId])
             ->all();
 
         $option ="";
@@ -210,12 +179,38 @@ class CommentService
         $allComments = $this->commentRepository->getAllComments();
         foreach ($allComments as $comment)
         {
-            if(!in_array($comment, $userList))
-            {
-                $userList[] = $this->findAuthorOfComment($comment);
-            }
+//            if(!in_array($comment, $userList))
+//            {
+                $userList[] = $comment->user;
+//            }
         }
         $list = ArrayHelper::map($userList, 'id', 'username');
         return $list;
+    }
+
+    public function oneLevelCommentsOfPost($comments, int $level)
+    {
+        $oneLevelComments = array();
+        foreach ($comments as $comment)
+        {
+            if($comment->level == $level)
+            {
+                $oneLevelComments[] = $comment;
+            }
+        }
+        return $oneLevelComments;
+    }
+
+    public function oneParentCommentsOfPost($comments, int $parentId)
+    {
+        $oneParentComments = array();
+        foreach ($comments as $comment)
+        {
+            if($comment->parent_id == $parentId)
+            {
+                $oneParentComments[] = $comment;
+            }
+        }
+        return $oneParentComments;
     }
 }

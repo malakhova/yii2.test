@@ -2,6 +2,9 @@
 
 namespace backend\controllers;
 
+use common\repositories\DatabasePostRepository;
+use common\repositories\DatabaseUserRepository;
+use common\repositories\UserRepository;
 use common\services\PostService;
 use common\services\UserService;
 use Yii;
@@ -18,16 +21,21 @@ use yii\filters\VerbFilter;
 class PostController extends Controller
 {
     private $postService;
-    private $userService;
+
+    private $userRepository;
+    private $postRepository;
+
     private $users;
 
-    public function __construct(string $id, Module $module, PostService $postService, UserService $userService, array $config = [])
+    public function __construct(string $id, Module $module, PostService $postService, DatabaseUserRepository $userRepository,  DatabasePostRepository $postRepository,array $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->postService = $postService;
-        $this->userService = $userService;
 
-        $this->users = $this->userService->findAllUsers();
+        $this->userRepository = $userRepository;
+        $this->postRepository = $postRepository;
+
+        $this->users = $this->userRepository->getAllUsers();
     }
 
     /**
@@ -72,7 +80,7 @@ class PostController extends Controller
      */
     public function actionView($id)
     {
-        $post = $this->postService->findPostById($id);
+        $post = $this->postRepository->getPostById($id);
         $username = $this->postService->getUsernameOfAuthor($post);
         return $this->render('view', [
             'post' => $post,
@@ -108,7 +116,7 @@ class PostController extends Controller
      */
     public function actionUpdate($id)
     {
-        $post = $this->postService->findPostById($id);
+        $post = $this->postRepository->getPostById($id);
 
         if ($post->load(Yii::$app->request->post()) && $post->save()) {
             return $this->redirect(['view', 'id' => $post->id]);
@@ -129,7 +137,7 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $post = $this->postService->findPostById($id);
+        $post = $this->postRepository->getPostById($id);
         $post->delete();
         return $this->redirect(['index']);
     }

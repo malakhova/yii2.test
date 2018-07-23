@@ -24,7 +24,7 @@ use yii\helpers\Url;
             'onchange' => '
                   $.post(
                   "'.Url::toRoute('comment/create-list-of-comment-parents').'",
-                  {post : $(this).val()},
+                  {postId : $(this).val()},
                   function(data){
                       $("select#comments").html(data).attr("disabled", false)
                   }

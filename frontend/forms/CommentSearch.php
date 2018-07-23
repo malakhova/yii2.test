@@ -41,7 +41,11 @@ class CommentSearch extends Comment
      */
     public function search($params)
     {
-        $query = Comment::find();
+        $query = Comment::find()
+            ->with(['user'])
+            ->with(['post'])
+            ->with(['parent'])
+            ->with(['parent.user']);
 
         // add conditions that should always apply here
 

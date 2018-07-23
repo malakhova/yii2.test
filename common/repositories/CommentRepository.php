@@ -15,4 +15,8 @@ interface CommentRepository
 {
     public function getCommentById($id) : Comment;
     public function getAllComments();
+    public function getAllCommentsOfPost($postId);
+    public function getOneLevelCommentsOfPost($postId, $level);
+
+    public function getMaxLevel() : int ;
 }

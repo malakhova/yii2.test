@@ -29,7 +29,49 @@ class DatabaseCommentRepository implements CommentRepository
     public function getAllComments()
     {
         // TODO: Implement getAllComments() method.
-        return Comment::find()->all();
+        return Comment::find()
+            ->with(['user'])
+            ->with(['post'])
+            ->with(['parent'])
+            ->with(['parent.user'])
+            ->all();
     }
 
+    public function getAllCommentsOfPost($postId)
+    {
+        // TODO: Implement getAllCommentsOfPost() method.
+        return Comment::find()
+            ->with(['user'])
+            ->with(['post'])
+            ->with(['parent'])
+            ->with(['parent.user'])
+            ->andWhere(['post_id' => $postId])
+            ->all();
+    }
+
+
+    public function getOneLevelCommentsOfPost($postId, $level)
+    {
+        $query = Comment::find()
+            ->with(['user'])
+            ->with(['post'])
+            ->with(['parent'])
+            ->with(['parent.user']);
+
+        // TODO: Implement getOneLevelCommentsOfPost() method.
+        return $query
+                ->where(['level' => $level])
+                ->andWhere(['post_id' => $postId])
+                ->orderBy('id')
+                ->all();
+    }
+
+
+    public function getMaxLevel(): int
+    {
+        // TODO: Implement getMaxLevel() method.
+        return Comment::find()
+            ->with(['user','post'])
+            ->max('level');
+    }
 }

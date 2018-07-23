@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\forms\Comment */
+/* @var $searchModel backend\forms\CommentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Comments';
@@ -27,12 +27,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'post_id',
                 'value' => 'post.title',
-                'filter' => $postsFilter
+//                'filter' => $postsFilter
             ],
             [
                 'attribute' => 'user_id',
                 'value' => 'user.username',
-                'filter' => $userFilter
+//                'filter' => $userFilter
             ],
             [
                 'label' => 'В ответ пользователю',

@@ -9,6 +9,7 @@
 namespace frontend\controllers;
 
 use common\essences\Comment;
+use common\repositories\DatabasePostRepository;
 use common\services\CommentService;
 use common\services\PostService;
 use common\services\UserService;
@@ -27,12 +28,16 @@ class BlogController extends Controller
     private $commentService;
     private $postService;
 
-    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, array $config = [])
+    private $postRepository;
+
+    public function __construct(string $id, Module $module, CommentService $commentService, PostService $postService, UserService $userService, DatabasePostRepository $postRepository, array $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->commentService = $commentService;
         $this->postService = $postService;
         $this->userService = $userService;
+
+        $this->postRepository = $postRepository;
     }
 
     public function behaviors()
@@ -61,17 +66,17 @@ class BlogController extends Controller
 
     public function actionSlug($slug)
     {
-        $post = $this->postService->findPostBySlug($slug);
-        $post_id = $post->id;
+        $post = $this->postRepository->getPostBySlug($slug);
+        $postId = $post->id;
+
         $searchModel = new CommentSearch();
-        $dataProvider = $this->commentService->treeCommentsView($post_id);
+        $dataProvider = $this->commentService->treeCommentsView($postId);
 
 
-        $comment = $this->commentService->createFrontendComment($post_id);
+        $comment = $this->commentService->createFrontendComment($postId);
 
-        if ($comment->load(Yii::$app->request->post()) && $comment->save())
-        {
-            $comment = $this->commentService->createFrontendComment($post_id);
+        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+            $comment = $this->commentService->createFrontendComment($postId);
         }
 
         return $this->render('view', [

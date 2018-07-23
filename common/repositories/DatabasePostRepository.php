@@ -39,7 +39,7 @@ class DatabasePostRepository implements PostRepository
     public function getListOfPosts()
     {
         // TODO: Implement getListOfPosts() method.
-        $posts = Post::find()->all();
+        $posts = Post::find()->with(['user'])->all();
         $list = ArrayHelper::map($posts, 'id', 'title');
         return $list;
     }
@@ -47,7 +47,7 @@ class DatabasePostRepository implements PostRepository
     public function getAllPosts()
     {
         // TODO: Implement getAllPosts() method.
-        return Post::find()->all();
+        return Post::find()->with(['user'])->all();
     }
 
 }

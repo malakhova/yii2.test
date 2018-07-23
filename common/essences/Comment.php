@@ -98,6 +98,7 @@ class Comment extends \yii\db\ActiveRecord
     public static function getMaxLevel()
     {
         $maxLevel = Comment::find()
+            ->with(['user','post'])
             ->max('level');
         return $maxLevel;
 

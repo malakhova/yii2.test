@@ -39,22 +39,6 @@ class PostService
         return new Post();
     }
 
-    public function findPostById($id)
-    {
-        return $this->postRepository->getPostById($id);
-
-    }
-
-    public function findPostBySlug($slug) : Post
-    {
-        return $this->postRepository->getPostBySlug($slug);
-
-    }
-
-    public function filterList()
-    {
-        return $this->postRepository->getListOfPosts();
-    }
 
     public function filterAuthorList()
     {
@@ -62,10 +46,10 @@ class PostService
         $allPosts = $this->postRepository->getAllPosts();
         foreach ($allPosts as $post)
         {
-            if(!in_array($post, $authorList))
-            {
-                $authorList[] = $this->findAuthorOfPost($post);
-            }
+//            if(!in_array($post, $authorList))
+//            {
+                $authorList[] = $post->user;
+//            }
         }
         $list = ArrayHelper::map($authorList, 'id', 'username');
         return $list;
@@ -76,15 +60,15 @@ class PostService
         return $this->postRepository->getAllPosts();
     }
 
-    public function findAuthorOfPost($post) : User
+
+    public function getUsernameOfAuthor(Post $post)
     {
-        return $this->userService->findUserById($post->user_id);
+        return $post->user->username;
     }
 
-    public function getUsernameOfAuthor($post)
+    public function getCreatedDate(Post $post)
     {
-        $user = $this->findAuthorOfPost($post);
-        return $user->username;
+        return $post->created_at;
     }
 
 }
